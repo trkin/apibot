@@ -55,3 +55,24 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # user authentication
 gem 'devise'
+
+# bootstrap form
+gem 'bootstrap_form'
+
+# pick icons by: fontello open; {select icons}; fontello convert
+gem 'fontello_rails_converter'
+
+# recaptcha for contact form
+gem 'recaptcha'
+
+# error notification to EXCEPTION_RECIPIENTS emails
+gem 'exception_notification'
+
+# open emails in browser
+gem 'letter_opener'
+
+# background job proccessing
+gem 'sidekiq'
+
+# index pages with datatables
+gem 'trk_datatables'
