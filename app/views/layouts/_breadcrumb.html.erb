@@ -1,0 +1,53 @@
+<nav aria-label="breadcrumb" class='d-flex'>
+  <ol class="flex-grow-1 breadcrumb breadcrumb--no-margin-bottom">
+    <li>
+      <%= link_to root_path do %>
+        <%# both png and svg have flickering effect with turbolinks %>
+        <%= image_tag 'logo.svg', class: 'breadcrumb__image--max-width', title: t('home') %>
+      <% end %>
+    </li>
+    <li class='breadcrumb-item d-none d-sm-block'>
+      <%= link_to root_path do %>
+        <%= t('home') %>
+      <% end %>
+    </li>
+    <% fetch_breadcrumb_list.each_with_index do |(text, link), i| %>
+      <% last_item = i == fetch_breadcrumb_list.length - 1 %>
+      <li class="breadcrumb-item <%= 'active' if last_item %>" <%= 'aria-current="page"' if last_item %>>
+        <% if link.present? %>
+          <%= link_to link do %>
+            <%= text %>
+          <% end %>
+        <% else %>
+          <span id='breadcrumb-last'>
+            <%= text %>
+          </span>
+        <% end %>
+      </li>
+    <% end %>
+    <li class='ml-auto'>
+      <%= bootstrap_form_tag url: 'root_path', layout: :inline do |f| %>
+        <%= f.text_field :search, skip_label: true, class: 'form-control--skip-padding-in-height d-none-display-important d-none d-md-block mr-1', id: 'search-field', placeholder: t('search'), size: '10', wrapper_class: 'form-group--without-margin' %>
+        <%= button_tag class: 'btn btn-link btn--no-padding d-md-none', type: 'button', 'data-controller': 'activate', 'data-action': 'activate#toggle', 'data-activate-selector': '#search-field' do %>
+          <i class="demo-icon icon-search"></i>
+        <% end %>
+      <% end %>
+    </li>
+    <li>
+      <% if current_user.present? %>
+        <%= button_tag class: "btn btn-link btn--no-padding", type: 'button', 'data-controller': 'activate', 'data-action': 'activate#toggle', 'data-activate-selector': '#sidebar,.sidebar__overlay' do %>
+          <i class="demo-icon icon-menu d-sm-none"></i>
+          <span class='d-none d-sm-block'><%= current_user.email %></span>
+        <% end %>
+      <% else %>
+        <div class='mx-2'>
+          <%= link_to t('contact'), contact_path, class: '' %>
+          <%= link_to t('my_devise.register'), new_user_registration_path, class: 'btn btn-info btn--no-padding px-2' %>
+          <%= link_to t('my_devise.sign_in'), new_user_session_path, class: 'btn btn-primary btn--no-padding px-2' %>
+        </div>
+      <% end %>
+    </li>
+  </ol>
+  <div class='align-self-center'>
+  </div>
+</nav>

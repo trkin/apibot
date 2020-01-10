@@ -1,0 +1,29 @@
+<%# on responsive there are two different horizontal navigations, one for admin and one for non admin
+  breakpoint is sm
+%>
+<%
+  left_navigation ||= false
+%>
+<div class='bg-light <%= left_navigation ? 'd-none d-sm-inline-block text-left left-navigation--min-width' : 'body__sticky-footer d-sm-none' %>'>
+  <ul class='nav nav-pills <%= left_navigation ? 'flex-column ' : 'justify-content-around flex-nowrap ' %>'>
+    <li class='nav-item flex-fill'>
+      <%= link_to root_path, class: "nav-link nav-link--no-padding rounded-0 #{'active' if params[:controller] == 'pages'}" do %>
+        <div class='d-flex flex-column-reverse d-sm-inline-flex flex-sm-row align-items-center'>
+          <i class='demo-icon icon-gauge mx-1' aria-hidden='true'></i>
+          <span><%= t('dashboard') %></span>
+        </div>
+      <% end %>
+    </li>
+    <% if current_user&.superadmin? %>
+      <li class='nav-item d-none d-sm-block'>
+        <span class='text-success'>
+          <%= t('admin_pages') %>
+        </span>
+      </li>
+      <li class='nav-item d-none d-sm-block'>
+        <%= link_to "<i class='demo-icon icon-gauge mx-1'></i>#{t('dashboard')}".html_safe, admin_dashboard_path, class: "nav-link nav-link--no-padding rounded-0 #{'active' if params[:controller] == 'admin/dashboard'}" %>
+        <%= link_to "<i class='demo-icon icon-user-o mx-1'></i>#{User.model_name.human(count: 2)}".html_safe, admin_users_path, class: "nav-link nav-link--no-padding rounded-0 #{'active' if params[:controller] == 'admin/users'}" %>
+      </li>
+    <% end %>
+  </ul>
+</div>

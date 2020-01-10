@@ -1,0 +1,44 @@
+sr-latin:
+  site_title: TRK BOT
+  home: Početak
+  language: jezik
+  language_name:
+    en: English
+    sr: Српски
+    sr-latin: Srpski latinica
+  sent_messages:
+    # 1, 21, 31 ...
+    one: '%{count} poruka je poslata'
+    # 2, 3, 4, 22, 23, 24, 32, 33, 34 ...
+    few: '%{count} poruke su poslate'
+    # all other integers: 5, 6, ... 9, 10, 11, 12, 13, 14 ... 20, 25, ...
+    other: '%{count} poruka je poslato'
+  add: Dodaj
+  add_new: Dodaj novi
+  add_more: Dodaj još
+  create: Napravi
+  edit: Uredi
+  update: Ažuriranje
+  delete: Izbriši
+  are_you_sure: Da li ste sigurni ?
+  are_you_sure_to_remove_item_name: Da li ste sigurni da želite da obrišete %{item_name} ?
+  data_item_name_successfully_created: 'Podatak %{item_name} je uspešno napravljen'
+  data_item_name_successfully_updated: 'Podatak %{item_name} je uspešno ažuriran'
+  data_item_name_successfully_changed: 'Podatak %{item_name} je uspešno promenjen'
+  data_item_name_successfully_deleted: 'Podatak %{item_name} je uspešno obrisan'
+  choose_place_and_activity: Izaberi mesto i aktivnost, a mi ćemo ti predložiti događaje...
+  where_are_you_going_on_the_weekend: 'Gde ćeš ići za vikend ?'
+  search: Pronađi
+  please_select: Molim izaberite
+  last_message: Poslednja poruka
+  contact: Kontakt
+  contact_description: Zahvalni smo za sve dobre i loše stvari na sajtu koje nam prijavljujete.
+  contact_thanks: Hvala za poruku
+  admin_pages: Admin strane
+  only_for_superadmin: Samo za super administratora
+  send: Pošalji
+  log_in_as: Uloguj se kao
+  dashboard: Kontrolna tabla
+  my_account: Moj nalog
+  my_company: Moja kompanija
+  change_item_name: 'Promeni %{item_name}'

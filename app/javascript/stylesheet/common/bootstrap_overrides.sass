@@ -1,0 +1,29 @@
+// here are helper classes than can be used to override some property
+
+.breadcrumb.breadcrumb--no-margin-bottom
+  margin-bottom: 0px
+
+// if you do not want to increase line height and skip padding
+.form-control.form-control--skip-padding-in-height
+  // calc(#{$input-line-height * 1em} + #{$input-padding-y * 2} + #{$input-height-border}) !default;
+  height: #{$input-line-height * 1em}
+
+// this is used if you want btn inside h1
+.btn.btn--font-size-inherit
+  font-size: inherit
+
+// button without padding
+.btn.btn--no-padding
+  padding: 0
+
+// when you want form-group inside form-inline to remove margin (by default it
+// removes margin on bigger screeens, but not on sm)
+.form-group.form-group--without-margin
+  margin: 0
+
+// by defauls list-group-item-action.active background is white, but when we add
+// text-primary if overrides that, so we need to define again
+.list-group-item-action.active.text-primary
+  color: #ffffff !important
+  &:hover
+    color: #ffffff !important

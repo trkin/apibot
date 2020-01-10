@@ -1,0 +1,14 @@
+<div id='remote-form'>
+  <%= bootstrap_form_with model: @company_user do |f| %>
+    <%= f.fields_for :user do |ff| %>
+      <%= f.text_field :name %>
+      <%= ff.email_field :email %>
+      <%= ff.password_field :password %>
+      <%= ff.password_field :password_confirmation %>
+    <% end %>
+    <%= f.select :position, CompanyUser.positions %>
+    <div class='remote-form__actions'>
+      <%= f.submit class: 'btn btn-primary'%>
+    </div>
+  <% end %>
+</div>

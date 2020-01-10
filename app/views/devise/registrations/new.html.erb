@@ -1,0 +1,31 @@
+<% login_layout %>
+
+<% if devise_mapping.omniauthable? %>
+  <%= link_to user_google_oauth2_omniauth_authorize_path, class: 'btn btn-block button-google text-white d-flex justify-content-start align-items-center' do %>
+    <i class="fab fa-google" aria-hidden="true"></i>
+    <div class='text-center flex-grow-1'>
+      <%= t('sign_up_with_google') %>
+    </div>
+  <% end %>
+
+  <div class='text-center'>
+  - <%= t('or') %> - 
+  </div>
+<% end %>
+
+<%= bootstrap_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <%= f.hidden_field :locale, value: I18n.locale %>
+
+  <%= f.email_field :email, autofocus: true, autocomplete: 'email', required: true %>
+  <%= f.password_field :password, autocomplete: "off", required: true %>
+  <% if @minimum_password_length %>
+    <em>(<%= t "my_devise.characters_minimum", count: @minimum_password_length %>)</em>
+  <% end %><br />
+  <%= f.password_field :password_confirmation, autocomplete: "off" %>
+
+  <%= f.submit t('my_devise.register') %>
+<% end %>
+
+<%= render 'devise/shared/links' %>

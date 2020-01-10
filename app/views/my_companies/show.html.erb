@@ -1,0 +1,55 @@
+<%
+  breadcrumb t('my_company') => nil
+%>
+<div class='row'>
+  <div class='col-sm-6'>
+    <div class='card'>
+      <div class='card-body'>
+        <% if current_user.admin_of_a_current_company? %>
+          <%= button_tag_open_modal edit_my_company_path, pull_right: true %>
+        <% end %>
+        <%= detail_view_list current_user.company, *Company::FIELDS %>
+      </div>
+    </div>
+  </div>
+  <div class='col-sm-6'>
+    <div class='card'>
+      <div class='card-body'>
+        <%= Rails.application.credentials.exception_recipients %>
+        <%= button_tag_open_modal new_company_user_path do %>
+          <i class="demo-icon icon-plus" aria-hidden="true"></i>
+          <%= t_crud('add_new', User) %>
+        <% end %>
+        <%= @datatable.render_html search_company_users_path(format: :json) %>
+      </div>
+    </div>
+  </div>
+</div>
+<% if current_user.company_users.size > 1 %>
+  <div class='card'>
+    <div class='card-body'>
+      <h5 class='card-title'>
+        <%= t('you_belongs_to_multiple_companies') %>
+      </h5>
+      <div class='text-center'>
+        <p><%= t'please_choose_company_which_you_want_to_access' %></p>
+        <% current_user.companies.by_name.each do |company| %>
+          <div class='m-2 show-on-hover d-flex justify-content-start align-items-center'>
+            <% if current_user.company == company %>
+              <button class='btn btn-secondary' disabled><%= company.name %></button>
+              <span class="badge badge-success"><%= t('current') %></span>
+            <% else %>
+              <%= form_tag submit_choose_company_path(company) do %>
+                <%= button_tag company.name, class: 'btn btn-secondary' %>
+              <% end %>
+              <span></span>
+            <% end %>
+            <%= button_to remove_me_from_company_path(company_id: company), method: :delete, 'data-confirm': t_are_you_sure, title: t('remove_me_from_a_company'), class: 'btn btn-link show-on-hover-target' do %>
+              <i class="text-danger fa fa-trash-alt" aria-hidden="true"></i>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

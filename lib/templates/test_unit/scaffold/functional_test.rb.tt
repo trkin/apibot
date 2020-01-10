@@ -1,0 +1,53 @@
+require 'test_helper'
+<% default_method = attributes_names.include?('name') ? 'name' : attributes_names.first %>
+<% module_namespacing do -%>
+class <%= controller_class_name %>ControllerTest < ActionDispatch::IntegrationTest
+  <%- if mountable_engine? -%>
+  include Engine.routes.url_helpers
+
+  <%- end -%>
+  setup do
+    @<%= singular_table_name %> = <%= fixture_name %>(:my_<%= singular_table_name %>)
+  end
+
+  test 'should get index' do
+    get <%= index_helper %>_path
+    assert_response :success
+    assert_select 'td', @<%= singular_table_name %>.<%= default_method %>
+  end
+
+  test 'should search' do
+    post search_<%= index_helper %>_path, params: { search: { value: @<%= singular_table_name %>.<%= default_method %> } }
+    assert_match @<%= singular_table_name %>.<%= default_method %>, response_json[:data].join
+    post search_<%= index_helper %>_path, params: { search: { value: 'blabla' } }
+    refute_match @<%= singular_table_name %>.<%= default_method %>, response_json[:data].join
+  end
+
+  test 'should create <%= singular_table_name %>' do
+    assert_difference('<%= class_name %>.count') do
+      post <%= index_helper %>_path, params: { <%= "#{singular_table_name}: { #{attributes_string} }" %> }
+    end
+
+    assert_js_redirected_to <%= singular_table_name %>_path(<%= class_name %>.last)
+  end
+
+  test 'should show <%= singular_table_name %>' do
+    get <%= show_helper %>
+    assert_response :success
+    assert_select 'dd', @<%= singular_table_name %>.<%= default_method %>
+  end
+
+  test 'should update <%= singular_table_name %>' do
+    patch <%= show_helper %>, params: { <%= "#{singular_table_name}: { #{attributes_string} }" %> }
+    assert_js_redirected_to <%= singular_table_name %>_path(<%= "@#{singular_table_name}" %>)
+  end
+
+  test 'should destroy <%= singular_table_name %>' do
+    assert_difference('<%= class_name %>.count', -1) do
+      delete <%= show_helper %>
+    end
+
+    assert_redirected_to <%= index_helper %>_path
+  end
+end
+<% end -%>

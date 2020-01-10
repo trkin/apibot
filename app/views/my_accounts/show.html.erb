@@ -1,0 +1,25 @@
+<%
+  breadcrumb t('my_account') => nil
+%>
+<div class='d-flex flex-column flex-md-row'>
+  <div class='card m-2'>
+    <div class='card-body'>
+      <%= button_tag_open_modal edit_my_account_path, pull_right: true %>
+      <dl class='row justify-content-start'>
+        <%= detail_view current_user, :name, label_class: 'col-sm-4' %>
+      </dl>
+      <hr>
+      <dl class='row justify-content-start'>
+        <%= detail_view_one User.human_attribute_name(:email), current_user.email + ' ' + button_tag_open_modal(change_email_my_account_path, text: t('change_item_name', item_name: User.human_attribute_name(:email))), label_class: 'col-sm-4' %>
+        <% if current_user.pending_reconfirmation? %>
+          <%= detail_view_one '', t('my_devise.currently_waiting_confirmation_for', item: current_user.unconfirmed_email) %>
+        <% end %>
+        <%= detail_view_one User.human_attribute_name(:password), button_tag_open_modal(change_password_my_account_path, text: t('change_item_name', item_name: User.human_attribute_name(:password))), label_class: 'col-sm-4' %>
+      </dl>
+      <hr>
+      <dl class='row'>
+        <%= detail_view_one t('my_devise.unhappy'), button_to(t('my_devise.cancel_my_account'), user_registration_path, data: { confirm: t('are_you_sure') }, method: :delete, class: 'btn btn-outline-danger float-right') %>
+      </dl>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+// show hide with display
+.d-none-display
+  display: none
+  &.active
+    display: initial
+
+// display important when you want to combine with d-none (which uses
+// !important) so we need to show important
+.d-none-display-important
+  display: none
+  &.active
+    display: initial!important
+
+// animate show hide with opacity and transition. Element still occupy the space
+.d-none-opacity
+  visibility: hidden
+  opacity: 0
+  transition: visibility 0.5s ease, opacity 0.5s ease
+  &.active
+    visibility: visible
+    opacity: 1
+
+// show on hover
+//
+//  <li class="show-on-hover">
+//    Text <a href="" class="show-on-hover-target">X</a>
+//  </li>
+.show-on-hover-target
+  visibility: hidden
+  opacity: 0
+  transition: visibility 0.5s ease, opacity 0.5s ease
+.show-on-hover:hover
+  .show-on-hover-target
+    visibility: visible
+    opacity: 1
+// add class show to stay visible when not hovering, bootstrap dropdown does dat
+.show-on-hover-target.show
+  visibility: visible
+
+// toggle active without javascript
+// <input type="checkbox" id="toggle-active" class="toggle-active" />
+// <label for="toggle-active"><%= t('add') %></label>
+// <div class="toggle-active-target hide-not-important">
+// </div>
+.toggle-active
+  position: absolute
+  clip: rect(0, 0, 0, 0)
+
+  &:checked ~ .toggle-active-target
+    visibility: visible
+    opacity: 1
+label[for="toggle-active"]
+  cursor: pointer

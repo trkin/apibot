@@ -1,15 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang='<%= I18n.locale %>' android-app='<%= android_app? %>'>
   <head>
-    <title>TrkBot</title>
+    <title><%= Const.common[:name] %>: <%= fetch_title %></title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%# Google Font %>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
   </head>
 
-  <body>
-    <%= yield %>
+  <body class='
+    <%= 'body__sticky-footer--wrapper' unless login_layout? %>
+    <%= 'bg-success' if Rails.application.credentials.is_staging %>
+    '>
+    <% if login_layout? %>
+      <%= render 'layouts/login_layout' %>
+    <% elsif blank_layout? %>
+      <%= yield %>
+    <% else %>
+      <% if current_user.present? %>
+        <%= render 'layouts/sidebar' %>
+      <% end %>
+      <%= render 'layouts/breadcrumb' %>
+
+      <div class='d-flex align-items-stretch body__content'>
+        <%= render 'layouts/navigation', left_navigation: true %>
+        <div class='pt-2 px-3 body__content_without_left-navigation'>
+          <%= yield %>
+        </div>
+      </div>
+
+      <%= render 'layouts/navigation' %>
+    <% end %>
+    <%= render 'layouts/flash_notice_alert_jbox' %>
   </body>
 </html>

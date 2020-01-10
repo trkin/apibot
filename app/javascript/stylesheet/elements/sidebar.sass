@@ -1,0 +1,27 @@
+$sidebar-width: 20rem
+#sidebar
+  &.active
+    right: 0
+  min-width: $sidebar-width
+  max-width: $sidebar-width
+  height: 100vh
+  position: fixed
+  top: 0
+  right: -$sidebar-width
+  background: #fff
+  transition: right 0.3s
+  z-index: 20
+  padding: 0.5rem
+
+.sidebar__overlay
+  display: none
+  position: fixed
+  width: 100vw
+  height: 100vh
+  background: rgba(0, 0, 0, 0.7)
+  z-index: 19
+  opacity: 0
+  transition: all 0.5s ease-in-out
+  &.active
+    display: block
+    opacity: 1

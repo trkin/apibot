@@ -1,0 +1,58 @@
+<% default_method = attributes_names.include?('name') ? 'name' : attributes_names.first -%>
+require 'application_system_test_case'
+
+<% module_namespacing do -%>
+class <%= class_name.pluralize %>Test < ApplicationSystemTestCase
+  setup do
+    @<%= singular_table_name %> = <%= fixture_name %>(:my_<%= singular_table_name %>)
+  end
+
+  test 'index and search' do
+    visit <%= plural_table_name %>_url
+    assert_selector 'td', text: @<%= singular_table_name %>.<%= default_method %>
+    fill_in 'Search', with: @<%= singular_table_name %>.<%= default_method %>
+    assert_selector 'td', text: @<%= singular_table_name %>.<%= default_method %>
+    fill_in 'Search', with: 'blabla'
+    refute_selector 'td', text: @<%= singular_table_name %>.<%= default_method %>
+  end
+
+  test 'creating a <%= human_name %>' do
+    visit <%= plural_table_name %>_url
+    click_on t_crud('add_new', <%= class_name %>)
+
+    <%- attributes_hash.each do |attr, value| -%>
+    <%- if boolean?(attr) -%>
+    check '<%= attr.humanize %>' if <%= value %>
+    <%- else -%>
+    fill_in '<%= attr.humanize %>', with: <%= value %>
+    <%- end -%>
+    <%- end -%>
+    click_on 'Create <%= human_name %>'
+
+    assert_notice '<%= human_name %> successfully created'
+  end
+
+  test 'updating a <%= human_name %>' do
+    visit <%= plural_table_name %>_url
+    click_on @<%= singular_table_name %>.id
+    click_on 'Edit'
+
+    fill_in '<%= default_method.humanize %>', with: 'blabla'
+    click_on 'Update <%= human_name %>'
+
+    assert_notice '<%= human_name %> successfully updated'
+    assert_selector 'dd', text: 'blabla'
+  end
+
+  test 'destroying a <%= human_name %>' do
+    visit <%= plural_table_name %>_url
+    click_on @<%= singular_table_name %>.id
+    click_on 'Edit'
+    page.accept_confirm do
+      click_on 'Delete'
+    end
+
+    assert_notice '<%= human_name %> successfully deleted'
+  end
+end
+<% end -%>

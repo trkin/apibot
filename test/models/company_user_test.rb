@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class CompanyUserTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test 'valid fixture' do
+    assert_valid_fixture company_users
+  end
 end

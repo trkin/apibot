@@ -1,0 +1,27 @@
+.flash-notice-alert-jbox__repeat
+  // I just copied what I found when inspecting jBox element
+  position: fixed
+  inset: auto 16px 16px auto
+  right: 15px
+  bottom: 15px
+  background-color: transparent
+  border: none
+  outline: none
+
+.flash-alert.jBox-Notice .jBox-container
+  background: $danger
+  .jBox-content
+    color: $white
+
+.flash-notice.jBox-Notice .jBox-container
+  background: $primary
+  .jBox-content
+    color: $white
+
+.jbox-modal
+  .jBox-title
+    background: $primary
+    color: $white
+
+.jBox-overlay .jBox-closeButton path, .jBox-overlay .jBox-closeButton:active path
+  fill: $primary

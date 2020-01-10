@@ -1,0 +1,11 @@
+.remote-form__actions
+  padding-top: 1rem
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin-top: 1rem
+  border-top: 1px solid $light
+  // in case there is a single Submit button we need to push right since we
+  // already used justify-content
+  & > *:last-child
+    margin-left: auto

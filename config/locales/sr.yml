@@ -1,0 +1,43 @@
+---
+sr:
+  site_title: TRK BOT
+  home: Почетак
+  language: језик
+  language_name:
+    en: English
+    sr: Српски
+    sr-latin: Srpski latinica
+  sent_messages:
+    one: "%{count} порука је послата"
+    few: "%{count} поруке су послате"
+    other: "%{count} порука је послато"
+  add: Додај
+  add_new: Додај нови
+  add_more: Додаj jош
+  create: Направи
+  edit: Уреди
+  update: Ажурирање
+  delete: Избриши
+  are_you_sure: Да ли сте сигурни ?
+  are_you_sure_to_remove_item_name: Да ли сте сигурни да желите да обришете %{item_name}
+    ?
+  data_item_name_successfully_created: Податак %{item_name} је успешно направљен
+  data_item_name_successfully_updated: Податак %{item_name} је успешно ажуриран
+  data_item_name_successfully_changed: Податак %{item_name} је успешно промењен
+  data_item_name_successfully_deleted: Податак %{item_name} је успешно обрисан
+  choose_place_and_activity: Изабери место и активност, а ми ћемо ти предложити догађаје...
+  where_are_you_going_on_the_weekend: Где ћеш ићи за викенд ?
+  search: Пронађи
+  please_select: Молим изаберите
+  last_message: Последња порука
+  contact: Контакт
+  contact_description: Захвални смо за све добре и лоше ствари на сајту које нам пријављујете.
+  contact_thanks: Хвала за поруку
+  admin_pages: Админ стране
+  only_for_superadmin: Само за супер администратора
+  send: Пошаљи
+  log_in_as: Улогуј се као
+  dashboard: Контролна табла
+  my_account: Мој налог
+  my_company: Моја компанија
+  change_item_name: Промени %{item_name}

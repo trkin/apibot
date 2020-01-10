@@ -1,0 +1,17 @@
+<%
+  breadcrumb t('dashboard') => nil
+%>
+<ul>
+  <li>
+    <%= link_to sample_error_admin_dashboard_path, sample_error_admin_dashboard_path %>
+  </li>
+  <li>
+    <%= link_to sample_error_in_javascript_admin_dashboard_path, sample_error_in_javascript_admin_dashboard_path %>
+  </li>
+  <li>
+    <%= link_to sample_error_in_sidekiq_admin_dashboard_path, sample_error_in_sidekiq_admin_dashboard_path %>
+  </li>
+  <li>
+    <%= link_to 'sidekiq', sidekiq_web_path %>
+  </li>
+</ul>

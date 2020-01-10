@@ -1,0 +1,5 @@
+/* this file should have extension CSS not scss since @import command is different */
+/* here we include other packages so postcss-import plugin will load css file
+ * from style attribute from package.json */
+/* @import 'package-name' is the same as @import 'package-name/file-path/file.css' */
+@import 'select2';

@@ -1,0 +1,10 @@
+<% default_method = attributes_names.include?('name') ? 'name' : attributes_names.first -%>
+<%%
+  breadcrumb <%= class_name %>.model_name.human(count: 2) => <%= index_helper %>_path, @<%= singular_table_name %>.<%= default_method %> => nil
+%>
+<div class='card'>
+  <div class='card-body'>
+    <%%= button_tag_open_modal edit_<%= singular_table_name %>_path(@<%= singular_table_name %>), title: t_crud('edit', <%= class_name %>), pull_right: true %>
+    <%%= detail_view_list @<%= singular_table_name %>, *<%= class_name %>::FIELDS %>
+  </div>
+</div>

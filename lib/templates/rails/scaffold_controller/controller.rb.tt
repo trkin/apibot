@@ -1,0 +1,57 @@
+<% if namespaced? -%>
+require_dependency "<%= namespaced_path %>/application_controller"
+
+<% end -%>
+<% module_namespacing do -%>
+class <%= controller_class_name %>Controller < ApplicationController
+  before_action :_set_<%= singular_table_name %>, except: %i[index search new create]
+
+  def index
+    @datatable = <%= controller_class_name %>Datatable.new view_context
+  end
+
+  def search
+    render json: <%= controller_class_name %>Datatable.new(view_context)
+  end
+
+  def show; end
+
+  def new
+    @<%= singular_table_name %> = <%= orm_class.build(class_name) %>
+    render partial: 'form', layout: false
+  end
+
+  def edit
+    render partial: 'form', layout: false
+  end
+
+  def create
+    @<%= singular_table_name %> = <%= orm_class.build(class_name) %>
+
+    update_and_render_or_redirect_in_js @<%= singular_table_name %>, _<%= singular_table_name %>_params, ->(id) { <%= singular_table_name %>_path(id) }
+  end
+
+  def update
+    update_and_render_or_redirect_in_js @<%= singular_table_name %>, _<%= singular_table_name %>_params, <%= singular_table_name %>_path(@<%= singular_table_name %>)
+  end
+
+  def destroy
+    @<%= orm_instance.destroy %>!
+    redirect_to <%= index_helper%>_path, notice: helpers.t_notice('successfully_deleted', <%= class_name %>)
+  end
+
+  def _set_<%= singular_table_name %>
+    @<%= singular_table_name %> = <%= orm_class.find(class_name, "params[:id]") %>
+  end
+
+  def _<%= "#{singular_table_name}_params" %>
+    <%- if attributes_names.empty? -%>
+    params.fetch(:<%= singular_table_name %>, {})
+    <%- else -%>
+    params.require(:<%= singular_table_name %>).permit(
+      *<%= class_name %>::FIELDS
+    )
+    <%- end -%>
+  end
+end
+<% end -%>

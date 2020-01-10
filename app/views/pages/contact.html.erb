@@ -1,2 +1,19 @@
-<h1>Pages#contact</h1>
-<p>Find me in app/views/pages/contact.html.erb</p>
+<%
+#  login_layout t('contact')
+%>
+
+<p class='text-center'><%= t 'contact_description' %></p>
+<%= bootstrap_form_for @contact, url: contact_path do |f| %>
+  <%= f.email_field :email, required: true, disabled: current_user.present? %>
+  <%= f.text_area :text, required: true %>
+  <div class='mb-5'>
+    <% if current_user&.confirmed? %>
+      <%= f.submit t('send'), class: 'btn btn-lg btn-primary float-right' %>
+    <% else %>
+      <div class='d-inline-block'>
+        <%= recaptcha_tags callback: 'enableRecaptchaButtons', size: 'compact' %>
+      </div>
+      <%= f.submit t('send'), class: 'btn btn-lg btn-primary float-right', 'data-recaptcha-button': 'true' %>
+    <% end %>
+  </div>
+<% end %>

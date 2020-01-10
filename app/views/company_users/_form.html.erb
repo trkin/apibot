@@ -1,0 +1,11 @@
+<div id='remote-form'>
+  <%= bootstrap_form_with model: @company_user do |f| %>
+    <%= f.select :position, CompanyUser.positions %>
+    <div class='remote-form__actions'>
+      <%= link_to company_user_path(@company_user), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@company_user.user.name), title: t_crud('delete', User) do %>
+        <i class="demo-icon icon-trash-empty text-danger" aria-hidden="true"><%= t(:remove) %></i>
+      <% end %>
+      <%= f.submit class: 'btn btn-primary'%>
+    </div>
+  <% end %>
+</div>

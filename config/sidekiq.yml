@@ -1,0 +1,4 @@
+:concurrency:  3
+:queues:
+  - trk_bot_default
+  - trk_bot_mailers

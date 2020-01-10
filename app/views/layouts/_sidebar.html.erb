@@ -1,0 +1,28 @@
+<nav id='sidebar' class=''>
+  <div class='d-flex align-items-center'>
+    <div class='text-secondary'><%= truncate current_user.email, length: 34 %></div>
+    <div class='ml-auto'>
+      <%= button_tag class: 'btn btn-link btn--no-padding', 'data-controller': 'activate', 'data-action': 'activate#toggle', 'data-activate-selector': '#sidebar,.sidebar__overlay' do %>
+        <i class="demo-icon icon-window-close-o font-size--1-5"></i>
+      <% end %>
+    </div>
+  </div>
+  <div class='list-group list-group-flush'>
+    <%= link_to "<i class='demo-icon icon-gauge mx-1'></i>#{t('home')}".html_safe, root_path, class: "list-group-item list-group-item-action text-primary #{'active' if params[:controller] == 'pages' && params[:action] != 'contact'}" %>
+    <%= link_to "<i class='demo-icon icon-building mx-1'></i>#{t('my_company')}".html_safe, my_company_path, class: "list-group-item list-group-item-action text-primary #{'active' if params[:controller] == 'my_companies'}" %>
+    <%= link_to "<i class='demo-icon icon-wrench mx-1'></i>#{t('my_account')}".html_safe, my_account_path, class: "list-group-item list-group-item-action text-primary #{'active' if params[:controller] == 'my_accounts'}" %>
+    <%= link_to "<i class='demo-icon icon-question-circle-o mx-1' aria-hidden='true'></i>#{t('contact')}".html_safe, contact_path, class: "list-group-item list-group-item-action text-primary #{'active' if params[:controller] == 'pages' && params[:action] == 'contact'}" %>
+    <div class='d-sm-none'>
+      <%# here are the links that we hide in navigation on responsive %>
+      <% if current_user.superadmin? %>
+        <span class='text-success'>
+          <%= t('admin_pages') %>
+        </span>
+        <%= link_to "<i class='demo-icon icon-gauge mx-1'></i>#{t('dashboard')}".html_safe, admin_dashboard_path, class: "list-group-item list-group-item-action text-primary #{'active' if params[:controller] == 'admin/dashboard'}" %>
+        <%= link_to "<i class='demo-icon icon-user-o mx-1'></i>#{User.model_name.human(count: 2)}".html_safe, admin_users_path, class: "list-group-item list-group-item-action text-primary #{'active' if params[:controller] == 'admin/users'}" %>
+      <% end %>
+    </div>
+    <%= link_to "<i class='icon-logout mx-1'></i>#{t('my_devise.sign_out')}".html_safe, destroy_user_session_path, method: :delete, class: 'list-group-item list-group-item-action text-primary' %>
+  </div>
+</nav>
+<div class='sidebar__overlay' data-controller='activate' data-action='click->activate#toggle' data-activate-selector='#sidebar,.sidebar__overlay'></div>

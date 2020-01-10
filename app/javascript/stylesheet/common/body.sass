@@ -1,0 +1,40 @@
+// line height is 1.5rem and padding is 0.75rem, that is 24px + 1px above and
+// 1px below and padding top and bootom 1.5rem * 16px = 24px in total is 50px
+$header-height: 50px
+$footer-height: 64px
+
+body
+  font-family: 'Josefin Sans', sans-serif
+
+html, body
+  height: 100%
+
+.body__content
+  // we need navigation to span all 100% vertical heigh
+  height: calc(100% - #{$header-height})
+
+.left-navigation--min-width
+  min-width: 10rem
+
+.body__content_without_left-navigation
+  width: calc(100% - 10rem)
+  @include media-breakpoint-only(xs)
+    width: 100%
+
+
+.body__sticky-footer
+  position: fixed
+  bottom: 0
+  width: 100%
+  background-color: #F5F5F5
+  z-index: 2
+
+@include media-breakpoint-only(xs)
+  // since footer is position fixed, we need to add margin to be able to scroll
+  // and see bootom above the footer
+  .body__sticky-footer--wrapper
+    margin-bottom: $footer-height
+    // Drawback is that page always has a vertical scroll, even content is less
+    // than 100%. Resetting body height to less than 100% helps only in this
+    // case when content is less than 100%, but than scroll is not enough
+    // height: calc(100% - #{$header-height} - #{$footer-height})

@@ -1,0 +1,9 @@
+<%
+  breadcrumb User.model_name.human(count: 2) => admin_users_path, @user.email => nil
+%>
+<div class='card'>
+  <div class='card-body'>
+    <%= button_tag_open_modal edit_admin_user_path(@user), title: t_crud('edit', User), pull_right: true %>
+    <%= detail_view_list @user, :name, :email %>
+  </div>
+</div>

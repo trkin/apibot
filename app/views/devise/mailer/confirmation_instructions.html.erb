@@ -1,0 +1,5 @@
+<p><%= t('my_devise_mailer.hi_name', name: @email) %>!</p>
+
+<p><%= t('my_devise_mailer.please_follow_the_link_below_in_order_to_confirm_your_email') %></p>
+
+<p><%= link_to t('my_devise_mailer.confirm_email'), confirmation_url(@resource, confirmation_token: @token), class: 'button' %></p>
