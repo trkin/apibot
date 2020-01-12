@@ -28,7 +28,7 @@
 <rect x="0" y="0" widht="100%" height="100%" fill="#ddd"/>
 <g font-size="40" font-weight="bold" font-family="arial" fill="blue">
 <text x="10" y="40" class="animate left">
-TRK
+API
 </text>
 <text x="10" y="80" class="animate right">
 BOT

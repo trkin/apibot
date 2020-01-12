@@ -1,4 +1,4 @@
-# TRK BOT
+# ApiBot
 
 Opensource tool that you can use to fetch some data from internet. In the app
 you can create `Bot` which will start the browser (if javascript is required you

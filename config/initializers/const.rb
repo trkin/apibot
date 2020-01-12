@@ -1,13 +1,13 @@
 class Const
   def self.common
     hash_or_error_if_key_does_not_exists(
-      name: 'TRK BOT',
+      name: 'API BOT',
       # short_name is also use in config/sidekiq.yml and config/application.rb
-      short_name: 'trk_bot',
+      short_name: 'apibot',
       # default_url is required for links in email body or in links in controller
       # when url host is not available (for example rails console)
       default_url: {
-        host: (Rails.env.production? ? 'trk-bot.herokuapp.com' : '127.0.0.1'),
+        host: (Rails.env.production? ? 'apibot.herokuapp.com' : '127.0.0.1'),
         # by default system test is running on random port each time on host 127.0.0.1:44859
         # you can use fixed domain (myapp.localhost) and port (3333) in test/a/capybara.rb so you can use
         # port: (Rails.env.production? ? nil : Rails.env.development? ? Rack::Server.new.options[:Port] : 3333),
