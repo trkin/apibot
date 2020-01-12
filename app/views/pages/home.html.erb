@@ -1,12 +1,65 @@
-<%= I18n.t('sent_messages', count: 1) %><br>
-<%= I18n.t('sent_messages', count: 2) %><br>
-<%= I18n.t('sent_messages', count: 5) %><br>
-<%= t_crud 'edit', User %><br>
-<%= t_crud 'are_you_sure_to_remove_item_name', User %><br>
-<%= t_notice 'successfully_created', User %><br>
-<%= l Date.today, format: :long %><br>
-<%=
-  user = User.new password: 'a'
-  user.valid?
-  user.errors.full_messages.to_sentence
-  %>
+<%
+  blank_layout
+%>
+<div class='bg-dark text-white'>
+  <% if current_user %>
+    <%= link_to "#{current_user.email} dashboard", dashboard_path, class: 'float-right text-white py-2 px-4' %>
+  <% else %>
+    <%= link_to 'Login', new_user_session_path, class: 'float-right text-white py-2 px-4' %>
+  <% end %>
+  <div class='text-center pt-5'>
+    <%= image_tag 'logo.svg', class: 'login-logo--max-width' %>
+    <p>My access to the data</p>
+  </div>
+  <hr class='border-white border-bottom' style='width: 80%'>
+  <div class='container py-5 text-center'>
+    <% if current_user %>
+      <%= link_to 'Go to dashboard', dashboard_path %>
+    <% else %>
+      <h4>Create new account</h4>
+      <p>Start scraping after you sign up</p>
+      <div class='mt-5 mb-5'>
+        <%= bootstrap_form_for @sign_up_company_form, url: sign_up_path, html: { 'data-validate': true } do |f| %>
+          <div class='row'>
+            <div class='col-sm-6 col-md-4 offset-md-2'>
+              <%= f.email_field :email, placeholder: 'Enter Your Email', required: true, class: '' %>
+              <%= f.password_field :password, placeholder: 'Enter Your Password', required: true, class: '' %>
+            </div>
+            <div class='col-sm-6 col-md-4'>
+              <%= f.text_field :company, placeholder: 'Enter Company Name', required: true %>
+              <%= f.text_field :name, placeholder: 'Enter Your Name', required: true, class: '' %>
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-md-8 offset-md-2'>
+              <%= f.submit 'SIGN UP', class: 'btn btn-block btn-primary font-weight-bold text-uppercase' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <div class='py-5 bg-dark text-center'>
+    <%= link_to 'LEARN MORE', '#', class: 'btn btn-warning rounded-pill px-4 text-light' %>
+  </div>
+  <div class='py-5 bg-secondary'>
+    <h2 class='text-center'>What others say</h2>
+    <div class='d-flex flex-column flex-sm-row justify-content-around align-items-center'>
+      <% 2.times do %>
+        <div class='d-flex flex-column flex-md-row'>
+          <%= image_tag 'logo.svg', style: 'width: 150px' %>
+          <div>
+            <p class='p-3'>
+              "I found the best deals"
+              <br>
+              <small class='font-italic'>Anna from Company</small>
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class='p-5 text-center bg-light'>
+    <%= link_to 'Contact us', contact_path, class: 'btn btn-light btn-lg' %>
+  </div>
+</div>

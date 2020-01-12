@@ -7,4 +7,5 @@ class Company < ApplicationRecord
   has_many :company_users, dependent: :destroy
   # note there is users.company_id needed for current company
   has_many :users, through: :company_users
+  has_many :bots, dependent: :destroy
 end

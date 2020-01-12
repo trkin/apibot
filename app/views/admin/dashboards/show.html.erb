@@ -15,3 +15,16 @@
     <%= link_to 'sidekiq', sidekiq_web_path %>
   </li>
 </ul>
+
+<%= I18n.t('sent_messages', count: 1) %><br>
+<%= I18n.t('sent_messages', count: 2) %><br>
+<%= I18n.t('sent_messages', count: 5) %><br>
+<%= t_crud 'edit', User %><br>
+<%= t_crud 'are_you_sure_to_remove_item_name', User %><br>
+<%= t_notice 'successfully_created', User %><br>
+<%= l Date.today, format: :long %><br>
+<%=
+  user = User.new password: 'a'
+  user.valid?
+  user.errors.full_messages.to_sentence
+  %>

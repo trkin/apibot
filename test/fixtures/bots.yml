@@ -1,0 +1,7 @@
+DEFAULTS: &DEFAULTS
+  start_url: $LABEL.com
+  name: $LABEL name
+  company: my_company
+
+my_bot:
+  <<: *DEFAULTS

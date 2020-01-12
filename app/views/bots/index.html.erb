@@ -1,0 +1,11 @@
+<%
+  breadcrumb Bot.model_name.human(count: 2) => nil
+%>
+
+<div class='float-left'>
+  <%= button_tag_open_modal new_bot_path  do %>
+    <i class="demo-icon icon-plus" aria-hidden="true"></i>
+    Add new bot
+  <% end %>
+</div>
+<%= @datatable.render_html search_bots_path(format: :json) %>

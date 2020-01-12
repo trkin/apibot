@@ -1,0 +1,9 @@
+<%
+  breadcrumb Step.model_name.human(count: 2) => steps_path, @step.bot_id => nil
+%>
+<div class='card'>
+  <div class='card-body'>
+    <%= button_tag_open_modal edit_step_path(@step), title: t_crud('edit', Step), pull_right: true %>
+    <%= detail_view_list @step, *Step::FIELDS %>
+  </div>
+</div>

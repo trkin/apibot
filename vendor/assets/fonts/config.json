@@ -181,6 +181,12 @@
       "css": "user-o",
       "code": 62144,
       "src": "fontawesome"
+    },
+    {
+      "uid": "acba01b26400b5e898ef20aabb2ff84d",
+      "css": "download-cloud",
+      "code": 59402,
+      "src": "iconic"
     }
   ]
 }

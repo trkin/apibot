@@ -1,6 +1,6 @@
 <% default_method = attributes_names.include?('name') ? 'name' : attributes_names.first -%>
 <div id='remote-form'>
-  <%%= bootstrap_form_with model: @<%= model_resource_name %>, layout: :horizontal do |f| %>
+  <%%= bootstrap_form_with model: @<%= model_resource_name %> do |f| %>
 <% attributes.each do |attribute| -%>
 <% if attribute.password_digest? -%>
     <%%= f.password_field :password %>

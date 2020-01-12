@@ -3,7 +3,7 @@
 %>
 
 <div class='float-left'>
-  <%%= button_tag_open_modal new_<%= singular_route_name %>_path  do %>
+  <%%= button_tag_open_modal new_<%= singular_route_name %>_path do %>
     <i class="demo-icon icon-plus" aria-hidden="true"></i>
     <%%= t_crud('add_new', <%= class_name %>) %>
   <%% end %>

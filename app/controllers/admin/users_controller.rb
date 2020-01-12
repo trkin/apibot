@@ -12,8 +12,7 @@ class Admin::UsersController < Admin::BaseController
   def show; end
 
   def new
-    @user = User.new
-    render partial: 'form', layout: false
+    # we create on sign up form
   end
 
   def edit
@@ -22,8 +21,7 @@ class Admin::UsersController < Admin::BaseController
 
   # JS
   def create
-    @user = User.new
-    update_and_render_or_redirect_in_js @user, _user_params, ->(id) { admin_user_path(id) }
+    # we create on sign up form
   end
 
   # JS

@@ -15,7 +15,6 @@
   <div class='col-sm-6'>
     <div class='card'>
       <div class='card-body'>
-        <%= Rails.application.credentials.exception_recipients %>
         <%= button_tag_open_modal new_company_user_path do %>
           <i class="demo-icon icon-plus" aria-hidden="true"></i>
           <%= t_crud('add_new', User) %>

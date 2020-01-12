@@ -1,0 +1,9 @@
+<%
+  breadcrumb Inspect.model_name.human(count: 2) => bot_inspects_path(@inspect.bot), @inspect.name => nil
+%>
+<div class='card'>
+  <div class='card-body'>
+    <%= button_tag_open_modal edit_inspect_path(@inspect), title: t_crud('edit', Inspect), pull_right: true %>
+    <%= detail_view_list @inspect, *Inspect::FIELDS %>
+  </div>
+</div>

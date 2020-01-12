@@ -1,5 +1,5 @@
 DEFAULTS: &DEFAULTS
   name: $LABEL Name
 
-my_comp:
+my_company:
   <<: *DEFAULTS

@@ -1,0 +1,8 @@
+DEFAULTS: &DEFAULTS
+  bot: my_bot
+  action: <%= Step::CLICK_ON %>
+  what: $LABEL what
+  with: $LABEL with
+
+my_step:
+  <<: *DEFAULTS

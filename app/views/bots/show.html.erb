@@ -1,0 +1,29 @@
+<%
+  breadcrumb Bot.model_name.human(count: 2) => bots_path, @bot.name => nil
+%>
+<div class='card'>
+  <div class='card-body'>
+    <%= button_tag_open_modal edit_bot_path(@bot), title: t_crud('edit', Bot), pull_right: true %>
+    <%= detail_view_list @bot, *Bot::FIELDS %>
+  </div>
+</div>
+<div data-test='steps'>
+  <hr>
+  <div class='float-left'>
+    <%= button_tag_open_modal new_bot_step_path(@bot) do %>
+      <i class="demo-icon icon-plus" aria-hidden="true"></i>
+      Add new step
+    <% end %>
+  </div>
+  <%= @steps_datatable.render_html search_bot_steps_path(@bot, format: :json) %>
+</div>
+<div data-test='inspects'>
+  <hr>
+  <div class='float-left'>
+    <%= button_tag_open_modal new_bot_inspect_path(@bot) do %>
+      <i class="demo-icon icon-plus" aria-hidden="true"></i>
+      Add new inspect
+    <% end %>
+  </div>
+  <%= @inspects_datatable.render_html search_bot_inspects_path(@bot, format: :json) %>
+</div>

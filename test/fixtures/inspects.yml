@@ -1,0 +1,7 @@
+DEFAULTS: &DEFAULTS
+  bot: my_bot
+  name: $LABEL name
+  target: $LABEL target
+
+my_inspect:
+  <<: *DEFAULTS

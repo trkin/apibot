@@ -1,0 +1,15 @@
+<div id='remote-form'>
+  <%= bootstrap_form_with model: @bot, layout: :horizontal do |f| %>
+    <%= f.text_field :start_url %>
+    <%= f.text_field :name %>
+    <div class='remote-form__actions'>
+      <% unless @bot.new_record? %>
+        <%= link_to bot_path(@bot), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@bot.name), title: t_crud('delete', Bot), class: 'btn btn-outline-danger' do %>
+          <%= t('delete') %>
+          <i class="demo-icon icon-trash-empty" aria-hidden="true"></i>
+        <% end %>
+      <% end %>
+      <%= f.submit class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>

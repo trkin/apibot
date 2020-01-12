@@ -27,7 +27,7 @@
     <% end %>
     <li class='ml-auto'>
       <%= bootstrap_form_tag url: 'root_path', layout: :inline do |f| %>
-        <%= f.text_field :search, skip_label: true, class: 'form-control--skip-padding-in-height d-none-display-important d-none d-md-block mr-1', id: 'search-field', placeholder: t('search'), size: '10', wrapper_class: 'form-group--without-margin' %>
+        <%= f.text_field :global_search, skip_label: true, class: 'form-control--skip-padding-in-height d-none-display-important d-none d-md-block mr-1', id: 'search-field', placeholder: t('search_site'), size: '10', wrapper_class: 'form-group--without-margin' %>
         <%= button_tag class: 'btn btn-link btn--no-padding d-md-none', type: 'button', 'data-controller': 'activate', 'data-action': 'activate#toggle', 'data-activate-selector': '#search-field' do %>
           <i class="demo-icon icon-search"></i>
         <% end %>

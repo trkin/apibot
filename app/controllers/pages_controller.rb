@@ -3,7 +3,9 @@ class PagesController < ApplicationController
     notify_javascript_error
   ]
 
-  def home; end
+  def home
+    @sign_up_company_form = SignUpCompanyForm.new
+  end
 
   def sign_in_development
     return unless Rails.env.development? || Rails.application.credentials.is_staging || current_user&.superadmin?

@@ -2,7 +2,7 @@ require 'application_system_test_case'
 
 class MyAccountsTest < ApplicationSystemTestCase
   test 'change email' do
-    sign_in users(:kayak_club_admin)
+    sign_in users(:user)
     visit my_account_path
     click_on t('change_item_name', item_name: User.human_attribute_name(:email))
     within '#remote-form' do
@@ -13,7 +13,7 @@ class MyAccountsTest < ApplicationSystemTestCase
   end
 
   test 'change password' do
-    user = users(:kayak_club_admin)
+    user = users(:user)
     sign_in user
     visit my_account_path
     click_on t('change_item_name', item_name: User.human_attribute_name(:password))
@@ -32,7 +32,7 @@ class MyAccountsTest < ApplicationSystemTestCase
   end
 
   test 'cancel' do
-    sign_in users(:kayak_club_admin)
+    sign_in users(:user)
     visit my_account_path
     click_on t('my_devise.cancel_my_account')
     assert_difference 'User.count', -1 do

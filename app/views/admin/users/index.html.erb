@@ -2,9 +2,6 @@
   breadcrumb User.model_name.human(count: 2) => nil
 %>
 
-<%= button_tag_open_modal new_admin_user_path do %>
-  <i class="demo-icon icon-plus" aria-hidden="true"></i>
-  <%= t_crud('add_new', User) %>
-<% end %>
+<%= link_to 'Add new user on root page', root_path %>
 <br>
 <%= @datatable.render_html search_admin_users_path(format: :json) %>

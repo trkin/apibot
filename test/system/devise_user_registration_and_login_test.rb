@@ -1,15 +1,6 @@
 require 'application_system_test_case'
 
 class DeviseUserRegistrationAndLoginTest < ApplicationSystemTestCase
-  def manual_register(email, password = 'password')
-    visit new_user_registration_path
-    fill_in User.human_attribute_name(:email), with: email
-    fill_in User.human_attribute_name(:password), with: password
-    fill_in User.human_attribute_name(:password_confirmation), with: password
-
-    click_on t('my_devise.register')
-  end
-
   def manual_login(email, password = 'password')
     visit new_user_session_path
     fill_in User.human_attribute_name(:email), with: email
@@ -19,61 +10,68 @@ class DeviseUserRegistrationAndLoginTest < ApplicationSystemTestCase
   end
 
   def assert_user_logged_in_with_email(email)
-    assert_selector 'button', text: email
+    assert_selector 'a', text: "#{email} dashboard"
   end
 
-  test 'register new user' do
-    manual_register 'new@email.com', 'some_password'
+  # def manual_register(email, password = 'password')
+  #   visit new_user_registration_path
+  #   fill_in User.human_attribute_name(:email), with: email
+  #   fill_in User.human_attribute_name(:password), with: password
+  #   fill_in User.human_attribute_name(:password_confirmation), with: password
 
-    assert_text t('devise.registrations.signed_up_but_unconfirmed')
-    user = User.find_by email: 'new@email.com'
-    assert_equal I18n.default_locale.to_s, user.locale
-  end
+  #   click_on t('my_devise.register')
+  # end
 
-  test 'register user already exists' do
-    email = users(:kayak_club_admin).email
-    manual_register email
-    assert_field_error t('errors.messages.taken')
-  end
+  # test 'register new user' do
+  #   manual_register 'new@email.com', 'some_password'
 
-  test 'register already exists, email upercased' do
-    email = users(:kayak_club_admin).email
-    manual_register email.upcase
-    assert_field_error t('errors.messages.taken')
-  end
+  #   assert_text t('devise.registrations.signed_up_but_unconfirmed')
+  #   user = User.find_by email: 'new@email.com'
+  #   assert_equal I18n.default_locale.to_s, user.locale
+  # end
 
-  test 'register already exists, email not striped' do
-    email = users(:kayak_club_admin).email
-    manual_register " #{email} "
-    assert_field_error t('errors.messages.taken')
-  end
+  # test 'register user already exists' do
+  #   email = users(:user).email
+  #   manual_register email
+  #   assert_field_error t('errors.messages.taken')
+  # end
+
+  # test 'register already exists, email upercased' do
+  #   email = users(:user).email
+  #   manual_register email.upcase
+  #   assert_field_error t('errors.messages.taken')
+  # end
+
+  # test 'register already exists, email not striped' do
+  #   email = users(:user).email
+  #   manual_register " #{email} "
+  #   assert_field_error t('errors.messages.taken')
+  # end
 
   test 'login' do
-    email = users(:kayak_club_admin).email
+    email = users(:user).email
     manual_login email
     assert_user_logged_in_with_email email
   end
 
   test 'login, email upercased' do
-    email = users(:kayak_club_admin).email
+    email = users(:user).email
     manual_login email.upcase
     assert_user_logged_in_with_email email
   end
 
   test 'login, email not striped' do
-    email = users(:kayak_club_admin).email
+    email = users(:user).email
     manual_login " #{email} "
     assert_user_logged_in_with_email email
   end
 
   test 'forgot password' do
-    user = users(:kayak_club_admin)
+    user = users(:user)
     visit new_user_password_path
     fill_in User.human_attribute_name(:email), with: user.email
-    perform_enqueued_jobs only: ActionMailer::DeliveryJob do
-      click_on t('my_devise.send_me_reset_password_instructions')
-      assert_notice t('devise.passwords.send_instructions')
-    end
+    click_on t('my_devise.send_me_reset_password_instructions')
+    assert_notice t('devise.passwords.send_instructions')
     mail = give_me_last_mail_and_clear_mails
     link = mail.body.match("(http://.*)\">#{t('my_devise_mailer.change_password')}")[1]
     visit link
@@ -86,7 +84,7 @@ class DeviseUserRegistrationAndLoginTest < ApplicationSystemTestCase
   end
 
   test 'resend confirmation instructions' do
-    user = users(:kayak_club_admin)
+    user = users(:user)
     user.confirmed_at = nil
     user.save!
     visit new_user_confirmation_path
@@ -99,7 +97,7 @@ class DeviseUserRegistrationAndLoginTest < ApplicationSystemTestCase
   test 'resend unlock instructions' do
     return unless User.devise_modules.include?(:lockable) && User.unlock_strategy_enabled?(:email)
 
-    user = users(:kayak_club_admin)
+    user = users(:user)
     user.locked_at = Time.zone.now
     user.save!
     visit new_user_unlock_path

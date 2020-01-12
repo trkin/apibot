@@ -76,3 +76,6 @@ gem 'sidekiq'
 
 # index pages with datatables
 gem 'trk_datatables'
+
+# ordering
+gem 'acts_as_list'

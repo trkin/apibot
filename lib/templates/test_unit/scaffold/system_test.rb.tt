@@ -5,6 +5,7 @@ require 'application_system_test_case'
 class <%= class_name.pluralize %>Test < ApplicationSystemTestCase
   setup do
     @<%= singular_table_name %> = <%= fixture_name %>(:my_<%= singular_table_name %>)
+    sign_in users(:user)
   end
 
   test 'index and search' do
@@ -34,7 +35,7 @@ class <%= class_name.pluralize %>Test < ApplicationSystemTestCase
 
   test 'updating a <%= human_name %>' do
     visit <%= plural_table_name %>_url
-    click_on @<%= singular_table_name %>.id
+    click_on @<%= singular_table_name %>.id.to_s
     click_on 'Edit'
 
     fill_in '<%= default_method.humanize %>', with: 'blabla'
@@ -46,7 +47,7 @@ class <%= class_name.pluralize %>Test < ApplicationSystemTestCase
 
   test 'destroying a <%= human_name %>' do
     visit <%= plural_table_name %>_url
-    click_on @<%= singular_table_name %>.id
+    click_on @<%= singular_table_name %>.id.to_s
     click_on 'Edit'
     page.accept_confirm do
       click_on 'Delete'

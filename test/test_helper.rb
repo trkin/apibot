@@ -27,6 +27,6 @@ class ActiveSupport::TestCase
   end
 
   def response_json
-    JSON.parse response.body
+    HashWithIndifferentAccess.new JSON.parse response.body
   end
 end
