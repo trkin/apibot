@@ -66,15 +66,15 @@ module TextHelper
 
   def class_for_status(status)
     case status
-    when 'unassigned'
+    when 'finished'
       'success'
-    when 'completed'
+    when 'in_queue'
       'secondary'
-    when 'cancelled_by_project', 'blocked'
+    when 'failed'
       'danger'
-    when 'relinquished'
+    when 'in_progress'
       'warning'
-    when 'accepted'
+    when ''
       'info'
     else
       'info'

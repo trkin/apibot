@@ -16,6 +16,13 @@ class Const
     )
   end
 
+  def self.examples
+    hash_or_error_if_key_does_not_exists(
+      number_of_books: 20,
+      per_page: 9,
+    )
+  end
+
   def self.collapse_keys
     hash_or_error_if_key_does_not_exists(
       new_message: 'new_message',

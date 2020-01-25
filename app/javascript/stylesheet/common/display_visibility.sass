@@ -20,6 +20,13 @@
     visibility: visible
     opacity: 1
 
+// bootstrap d-block is important so can not use it when I need fieldset to be
+// block and eventually activate and deactivate display: block!important
+.d-none-display-block
+  display: none
+  &.active
+    display: block
+
 // show on hover
 //
 //  <li class="show-on-hover">
@@ -38,10 +45,10 @@
   visibility: visible
 
 // toggle active without javascript
-// <input type="checkbox" id="toggle-active" class="toggle-active" />
-// <label for="toggle-active"><%= t('add') %></label>
-// <div class="toggle-active-target hide-not-important">
-// </div>
+// <input type='checkbox' id='toggle-active' class='toggle-active' />
+// <label for='toggle-active'><%= t('add') %></label>
+// <span class='toggle-active-target d-none-opacity'>
+// </span>
 .toggle-active
   position: absolute
   clip: rect(0, 0, 0, 0)

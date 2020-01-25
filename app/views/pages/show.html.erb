@@ -1,0 +1,29 @@
+<%
+  breadcrumb Run.model_name.human(count: 2) => runs_path, @page.run.bot.name_or_start_url => bot_path(@page.run.bot), "Run #{@page.run.id}" => run_path(@page.run), @page.id => nil
+%>
+<div class='row'>
+  <div class='col-md-3'>
+    <div class='card'>
+      <div class='card-body'>
+        <%= button_to inspect_page_path(@page), class: 'btn btn-block btn-primary' do %>
+          <i class="demo-icon icon-zoom-in-outline" aria-hidden="true"></i>
+          Inspect again
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class='col-md-9'>
+    <div class='card'>
+      <div class='card-body'>
+        <div class='edit-button'>
+          <%= button_to page_path(@page), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@page.id), title: t_crud('delete', Page), class: 'btn btn-outline-danger' do %>
+            <i class="demo-icon icon-trash-empty" aria-hidden="true"></i>
+            <%= t('delete') %>
+          <% end %>
+        </div>
+        <%= detail_view_list @page, *([:id] + Page::FIELDS - [:content]) %>
+        <%= link_to 'Content <i class="demo-icon icon-link-ext"></i>'.html_safe, content_page_path(@page), target: :_blank %>
+      </div>
+    </div>
+  </div>
+</div>

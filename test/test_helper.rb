@@ -1,6 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
+require 'webmock/minitest'
 
 Dir[Rails.root.join('test/a/**/*.rb')].each { |f| require f }
 

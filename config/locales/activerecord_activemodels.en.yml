@@ -4,9 +4,17 @@ en:
     models:
       user:
         one: User
-        few: Users
         other: Users
-        accusative: user
+      bot:
+        one: Bot
+        other: Bots
+        accusative: bot
+      run:
+        one: Run
+        other: Runs
+      page:
+        one: Page
+        other: Pages
     attributes:
       user:
         name: Name

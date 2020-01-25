@@ -13,7 +13,10 @@ class StepsController < ApplicationController
   def show; end
 
   def new
-    @step = @bot.steps.new
+    @step = @bot.steps.new(
+      action: StepService::ALL_ACTIONS.first,
+      selector_type: :css,
+    )
     render partial: 'form', layout: false
   end
 
@@ -23,11 +26,13 @@ class StepsController < ApplicationController
 
   def create
     @step = @bot.steps.new
+    @step.filters = params[:step][:filter_keys].zip(params[:step][:filter_values]).to_h if params[:step][:filter_values].present?
 
     update_and_render_or_redirect_in_js @step, _step_params, bot_path(@bot)
   end
 
   def update
+    @step.filters = params[:step][:filter_keys].zip(params[:step][:filter_values]).to_h if params[:step][:filter_values].present?
     update_and_render_or_redirect_in_js @step, _step_params, bot_path(@step.bot)
   end
 

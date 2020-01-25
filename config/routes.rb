@@ -1,17 +1,23 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
   shallow do
-    root 'pages#home'
+    root 'home#home'
     devise_for :users
     authenticate :user, ->(u) { u.superadmin? } do
       mount Sidekiq::Web => '/sidekiq'
     end
 
-    get 'pages/home'
-    get 'sign-in-development/:id', to: 'pages#sign_in_development', as: :sign_in_development
-    get 'contact', to: 'pages#contact'
-    post 'contact', to: 'pages#submit_contact'
-    post 'notify-javascript-error', to: 'pages#notify_javascript_error'
+    get 'home/home'
+    get 'sign-in-development/:id', to: 'home#sign_in_development', as: :sign_in_development
+    get 'contact', to: 'home#contact'
+    post 'contact', to: 'home#submit_contact'
+    post 'notify-javascript-error', to: 'home#notify_javascript_error'
+
+    get :examples, to: 'examples/application#index'
+    scope :examples do
+      get :paginated_with_links, to: 'examples/paginated_with_links#index'
+      get 'paginated_with_links/:id', to: 'examples/paginated_with_links#book', as: :paginated_with_links_book
+    end
 
     resource :sign_up
     resource :dashboard
@@ -27,6 +33,23 @@ Rails.application.routes.draw do
       resources :steps do
         collection do
           post :search
+        end
+      end
+    end
+    resources :runs do
+      collection do
+        post :search
+      end
+      member do
+        post :inspect_all
+      end
+      resources :pages do
+        collection do
+          post :search
+        end
+        member do
+          get :content
+          post :inspect
         end
       end
     end

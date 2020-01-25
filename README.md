@@ -3,9 +3,13 @@
 Opensource tool that you can use to fetch some data from internet. In the app
 you can create `Bot` which will start the browser (if javascript is required you
 can use headless chrome instead of mechanize), click on page elements, fill
-inputs and submit forms so it can get to the desired page which is saved. Saved
-page is processed by `Inspects` to return some data from the given html, for
-example `h1` header text or array of `#my-list li` items.
+inputs and submit forms so it can get to the desired page which is saved. It
+follows https://github.com/teamcapybara/capybara dsl.
+
+
+Saved page is processed by `Inspects` to return some data from the given html,
+for example `h1` header text or array of `#my-list li` items.
+
 
 # Example
 
@@ -51,3 +55,7 @@ Run tests
 ```
 rake
 ```
+
+# Similar tools
+
+* Kimurai https://github.com/vifreefly/kimuraframework

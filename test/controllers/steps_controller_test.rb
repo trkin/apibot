@@ -21,14 +21,14 @@ class StepsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create step' do
     assert_difference('Step.count') do
-      post bot_steps_path(@step.bot), params: { step: { action: @step.action, what: @step.what, with: @step.with } }
+      post bot_steps_path(@step.bot), params: { step: { action: @step.action, locator: @step.locator } }
     end
 
     assert_js_redirected_to bot_path(Step.last.bot)
   end
 
   test 'should update step' do
-    patch step_url(@step), params: { step: { action: @step.action, what: @step.what, with: @step.with } }
+    patch step_url(@step), params: { step: { action: @step.action, locator: @step.locator } }
     assert_js_redirected_to bot_path(@step.bot)
   end
 

@@ -1,0 +1,8 @@
+<%
+  breadcrumb 'Books' => paginated_with_links_path, @book.title => nil
+%>
+<div class='card'>
+  <div class='card-body'>
+    <%= detail_view_list @book, *Book::FIELDS %>
+  </div>
+</div>

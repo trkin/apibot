@@ -13,7 +13,7 @@ Dir.entries("#{Rails.root}/test/fixtures").each do |file_name|
 
     logger.info "klass=#{klass} column=#{column}"
     klass.constantize.find_each do |item|
-      item.send "#{column}=", item.send(column).humanize
+      item.send "#{column}=", item.send(column)&.humanize
       item.save # email can not be saved with spaces
     end
     already_proccessed.append "#{klass}-#{column}"

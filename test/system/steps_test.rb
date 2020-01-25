@@ -8,15 +8,15 @@ class StepsTest < ApplicationSystemTestCase
 
   test 'index and search' do
     visit bot_path(@step.bot)
-    assert_selector 'td', text: @step.what
+    assert_selector 'td', text: @step.locator
     within '[data-test=steps]' do
-      fill_in 'Search', with: @step.what
+      fill_in 'Search', with: @step.locator
     end
-    assert_selector 'td', text: @step.what
+    assert_selector 'td', text: @step.locator
     within '[data-test=steps]' do
       fill_in 'Search', with: 'blabla'
     end
-    refute_selector 'td', text: @step.what
+    refute_selector 'td', text: @step.locator
   end
 
   test 'creating a Step' do
@@ -24,8 +24,8 @@ class StepsTest < ApplicationSystemTestCase
     click_on 'Add new step'
 
     select @step.action, from: 'Action'
-    fill_in 'What', with: @step.what
-    fill_in 'With', with: @step.with
+    fill_in 'Locator', with: @step.locator
+    fill_in 'Options', with: @step.options
     click_on 'Create Step'
 
     assert_notice 'Step successfully created'
@@ -37,7 +37,7 @@ class StepsTest < ApplicationSystemTestCase
       click_on 'Edit', match: :first
     end
 
-    fill_in 'What', with: 'blabla'
+    fill_in 'Locator', with: 'blabla'
     click_on 'Update Step'
 
     assert_notice 'Step successfully updated'

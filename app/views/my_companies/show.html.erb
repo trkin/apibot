@@ -45,6 +45,7 @@
             <% end %>
             <%= button_to remove_me_from_company_path(company_id: company), method: :delete, 'data-confirm': t_are_you_sure, title: t('remove_me_from_a_company'), class: 'btn btn-link show-on-hover-target' do %>
               <i class="text-danger fa fa-trash-alt" aria-hidden="true"></i>
+              <%= t('delete') %>
             <% end %>
           </div>
         <% end %>

@@ -14,8 +14,8 @@
     <div class='remote-form__actions'>
       <%% unless @<%= singular_table_name %>.new_record? %>
         <%%= link_to <%= singular_route_name %>_path(@<%= singular_table_name %>), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@<%= singular_table_name %>.<%= default_method %>), title: t_crud('delete', <%= class_name %>), class: 'btn btn-outline-danger' do %>
-          <%%= t('delete') %>
           <i class="demo-icon icon-trash-empty" aria-hidden="true"></i>
+          <%%= t('delete') %>
         <%% end %>
       <%% end %>
       <%%= f.submit class: 'btn btn-primary' %>

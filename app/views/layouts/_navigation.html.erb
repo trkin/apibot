@@ -22,6 +22,14 @@
         </div>
       <% end %>
     </li>
+    <li class='nav-item flex-fill'>
+      <%= link_to runs_path, class: "nav-link nav-link--no-padding rounded-0 #{'active' if params[:controller] == 'runs'}" do %>
+        <div class='d-flex flex-column-reverse d-sm-inline-flex flex-sm-row align-items-center'>
+          <i class='demo-icon icon-play-outline mx-1' aria-hidden='true'></i>
+          <span>Runs</span>
+        </div>
+      <% end %>
+    </li>
     <% if current_user&.superadmin? %>
       <li class='nav-item d-none d-sm-block'>
         <span class='text-success'>

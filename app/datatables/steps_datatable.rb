@@ -3,8 +3,9 @@ class StepsDatatable < TrkDatatables::ActiveRecord
     {
       'steps.position': { order: false },
       'steps.action': { order: false },
-      'steps.what': { order: false },
-      'steps.with': { order: false },
+      'steps.selector_type': { order: false },
+      'steps.locator': { order: false },
+      'steps.filters': { order: false },
       '': {},
     }
   end
@@ -26,8 +27,9 @@ class StepsDatatable < TrkDatatables::ActiveRecord
       [
         step.position,
         step.action,
-        step.what,
-        step.with,
+        step.selector_type,
+        step.locator,
+        step.filters,
         links,
       ]
     end

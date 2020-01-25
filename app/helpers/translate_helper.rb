@@ -4,9 +4,9 @@ module TranslateHelper
   def t_crud(action, model_class)
     # we are using accusative here
     if action.include? 'item_name'
-      t(action, item_name: t('activerecord.models.' + model_class.name.underscore + '.accusative'))
+      t(action, item_name: t('activerecord.models.' + model_class.name.underscore + '.one'))
     else
-      "#{t(action)} #{t('activerecord.models.' + model_class.name.underscore + '.accusative')}"
+      "#{t(action)} #{t('activerecord.models.' + model_class.name.underscore + '.one')}"
     end
   end
 

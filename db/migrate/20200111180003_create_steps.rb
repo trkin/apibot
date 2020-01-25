@@ -4,8 +4,9 @@ class CreateSteps < ActiveRecord::Migration[6.0]
       t.references :bot, null: false, foreign_key: true
       t.integer :position
       t.string :action, null: false
-      t.string :what
-      t.string :with
+      t.string :selector_type
+      t.string :locator
+      t.text :filters
 
       t.timestamps
     end

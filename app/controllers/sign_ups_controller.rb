@@ -15,7 +15,7 @@ class SignUpsController < ApplicationController
       end
     else
       flash.now[:alert] = @sign_up_company_form.errors.full_messages.to_sentence
-      render 'pages/home'
+      render 'home/home'
     end
   end
 

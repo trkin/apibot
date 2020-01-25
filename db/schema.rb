@@ -10,15 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_11_180003) do
+ActiveRecord::Schema.define(version: 2020_01_14_025116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "books", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.string "price"
+    t.integer "no_of_likes"
+    t.datetime "published_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "bots", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "engine", null: false
     t.string "start_url", null: false
     t.string "name"
-    t.bigint "company_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["company_id"], name: "index_bots_on_company_id"
@@ -44,17 +55,39 @@ ActiveRecord::Schema.define(version: 2020_01_11_180003) do
     t.bigint "bot_id", null: false
     t.string "name", null: false
     t.string "target", null: false
+    t.string "regexp"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["bot_id"], name: "index_inspects_on_bot_id"
+  end
+
+  create_table "pages", force: :cascade do |t|
+    t.bigint "run_id", null: false
+    t.string "url"
+    t.text "content", null: false
+    t.text "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["run_id"], name: "index_pages_on_run_id"
+  end
+
+  create_table "runs", force: :cascade do |t|
+    t.bigint "bot_id", null: false
+    t.string "status", null: false
+    t.text "log"
+    t.datetime "finished_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["bot_id"], name: "index_runs_on_bot_id"
   end
 
   create_table "steps", force: :cascade do |t|
     t.bigint "bot_id", null: false
     t.integer "position"
     t.string "action", null: false
-    t.string "what"
-    t.string "with"
+    t.string "selector_type"
+    t.string "locator"
+    t.text "filters"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["bot_id"], name: "index_steps_on_bot_id"
@@ -94,5 +127,7 @@ ActiveRecord::Schema.define(version: 2020_01_11_180003) do
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
   add_foreign_key "inspects", "bots"
+  add_foreign_key "pages", "runs"
+  add_foreign_key "runs", "bots"
   add_foreign_key "steps", "bots"
 end

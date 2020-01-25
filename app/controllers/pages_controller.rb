@@ -1,55 +1,60 @@
 class PagesController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[
-    notify_javascript_error
-  ]
+  before_action :_set_page, except: %i[index search new create]
 
-  def home
-    @sign_up_company_form = SignUpCompanyForm.new
+  def index
+    # index is on run show page
   end
 
-  def sign_in_development
-    return unless Rails.env.development? || Rails.application.credentials.is_staging || current_user&.superadmin?
-
-    user = User.find params[:id]
-    sign_in :user, user, byepass: true
-    redirect_to params[:redirect_to] || root_path
+  def search
+    render json: PagesDatatable.new(view_context)
   end
 
-  def contact
-    @contact = Contact.new(
-      email: current_user&.email
-    )
+  def show; end
+
+  def content
+    render html: @page.content.gsub(/display.none/, '').html_safe
   end
 
-  def submit_contact
-    @contact = Contact.new(
-      email: current_user&.email || params[:contact][:email],
-      text: params[:contact][:text],
-      g_recaptcha_response: params['g-recaptcha-response'],
-      current_user: current_user,
-      remote_ip: request.remote_ip,
-    )
-    if @contact.save
-      redirect_to contact_path, notice: t('contact_thanks')
+  def inspect
+    result = InspectService.new(@page).perform
+    if result.success?
+      redirect_to page_path(@page), notice: 'Successfully inspected'
     else
-      flash.now[:alert] = @contact.errors.full_messages.join(', ')
-      render :contact
+      redirect_to page_path(@page), alert: result.message
     end
   end
 
-  def notify_javascript_error
-    js_receivers = Rails.application.credentials.javascript_error_recipients
-    if js_receivers.present?
-      ExceptionNotifier.notify_exception(
-        Exception.new(params[:errorMsg]),
-        env: request.env,
-        exception_recipients: js_receivers.to_s.split(','),
-        data: {
-          current_user: current_user,
-          params: params
-        }
-      )
-    end
-    head :ok
+  def new
+    @page = Page.new
+    render partial: 'form', layout: false
+  end
+
+  def edit
+    render partial: 'form', layout: false
+  end
+
+  def create
+    @page = Page.new
+
+    update_and_render_or_redirect_in_js @page, _page_params, ->(id) { page_path(id) }
+  end
+
+  def update
+    update_and_render_or_redirect_in_js @page, _page_params, page_path(@page)
+  end
+
+  def destroy
+    @page.destroy!
+    redirect_to run_path(@page.run), notice: helpers.t_notice('successfully_deleted', Page)
+  end
+
+  def _set_page
+    @page = Page.find(params[:id])
+  end
+
+  def _page_params
+    params.require(:page).permit(
+      *Page::FIELDS
+    )
   end
 end

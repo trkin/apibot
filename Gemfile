@@ -43,11 +43,7 @@ group :development do
 end
 
 group :test do
-  # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
-  gem 'selenium-webdriver'
-  # Easy installation and use of web drivers to run system tests with browsers
-  gem 'webdrivers'
+  gem 'webmock'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -79,3 +75,18 @@ gem 'trk_datatables'
 
 # ordering
 gem 'acts_as_list'
+
+# chrome and mechanize
+gem 'capybara', '>= 2.15'
+gem 'selenium-webdriver'
+# Easy installation and use of web drivers to run system tests with browsers
+gem 'webdrivers'
+# access remote servers
+gem 'capybara-mechanize'
+
+# csv
+gem 'csv'
+
+# for example site
+gem 'kaminari'
+gem 'bootstrap4-kaminari-views'

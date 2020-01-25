@@ -1,10 +1,27 @@
 <%
   breadcrumb Bot.model_name.human(count: 2) => bots_path, @bot.name => nil
 %>
-<div class='card'>
-  <div class='card-body'>
-    <%= button_tag_open_modal edit_bot_path(@bot), title: t_crud('edit', Bot), pull_right: true %>
-    <%= detail_view_list @bot, *Bot::FIELDS %>
+<div class='row'>
+  <div class='col-md-3'>
+    <div class='card'>
+      <div class='card-body'>
+        <%= button_to runs_path(bot_id: @bot.id), class: 'btn btn-block btn-primary' do %>
+          <i class="demo-icon icon-play-outline" aria-hidden="true"></i>
+          Run
+        <% end %>
+        <% if @bot.runs.present? %>
+          <%= link_to 'Last run', run_path(@bot.runs.order(created_at: :asc).last), class: 'btn btn-link' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class='col-md-9'>
+    <div class='card'>
+      <div class='card-body'>
+        <%= button_tag_open_modal edit_bot_path(@bot), title: t_crud('edit', Bot), pull_right: true %>
+        <%= detail_view_list @bot, *Bot::FIELDS %>
+      </div>
+    </div>
   </div>
 </div>
 <div data-test='steps'>

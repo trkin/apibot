@@ -1,0 +1,45 @@
+<%
+  breadcrumb Run.model_name.human(count: 2) => runs_path, @run.bot.name_or_start_url => bot_path(@run.bot), @run.id => nil
+%>
+<div class='row'>
+  <div class='col-md-3'>
+    <div class='card'>
+      <div class='card-body'>
+        <% if @run.finished? %>
+          <%= link_to run_path(@run, format: :csv), class: 'btn btn-block btn-primary' do %>
+            <i class="demo-icon icon-doc-text" aria-hidden="true"></i>
+            Generate CSV
+          <% end %>
+          <%= button_to inspect_all_run_path(@run), class: 'btn btn-block btn-secondary mt-2' do %>
+            <i class="demo-icon icon-zoom-in-outline" aria-hidden="true"></i>
+            Inspect all <%= pluralize @run.pages.count, 'page' %>
+          <% end %>
+        <% else %>
+          Please wait untill run is finished.
+          <br>
+          Current number of pages is <%= @run.pages.size %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class='col-md-9'>
+    <div class='card'>
+      <div class='card-body'>
+        <div class='edit-button'>
+          <%= button_to run_path(@run), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@run.id), title: t_crud('delete', Run), class: 'btn btn-outline-danger' do %>
+            <i class="demo-icon icon-trash-empty" aria-hidden="true"></i>
+            <%= t('delete') %>
+          <% end %>
+        </div>
+        <%= badge_for_status @run.status %>
+        <%= detail_view_list @run, *([:id] + Run::FIELDS - [:log]) %>
+        <details>
+          <summary>Log</summary>
+          <%= @run.log&.html_safe %>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<%= @datatable.render_html search_run_pages_path(@run, format: :json) %>

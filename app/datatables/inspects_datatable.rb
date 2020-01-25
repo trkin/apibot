@@ -3,6 +3,7 @@ class InspectsDatatable < TrkDatatables::ActiveRecord
     {
       'inspects.name': {},
       'inspects.target': {},
+      'inspects.regexp': {},
       '': {},
     }
   end
@@ -20,6 +21,7 @@ class InspectsDatatable < TrkDatatables::ActiveRecord
       [
         inspect.name,
         inspect.target,
+        inspect.regexp,
         links
       ]
     end

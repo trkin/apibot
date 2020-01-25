@@ -1,7 +1,8 @@
 DEFAULTS: &DEFAULTS
-  start_url: $LABEL.com
-  name: $LABEL name
   company: my_company
+  engine: <%= Bot.engines[:mechanize] %>
+  name: $LABEL name
 
 my_bot:
   <<: *DEFAULTS
+  start_url: https://blog.trk.in.rs

@@ -1,0 +1,7 @@
+DEFAULTS: &DEFAULTS
+  run: my_run
+  content: $LABEL content
+  data: {}
+
+my_page:
+  <<: *DEFAULTS

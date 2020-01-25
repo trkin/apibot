@@ -1,0 +1,47 @@
+<html lang='<%= I18n.locale %>' android-app='<%= android_app? %>'>
+  <head>
+    <title><%= Const.common[:name] %>: <%= fetch_title %></title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%# Google Font %>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+  </head>
+
+  <body class='body__sticky-footer--wrapper'>
+    <nav aria-label="breadcrumb" class='d-flex'>
+      <ol class="flex-grow-1 breadcrumb breadcrumb--no-margin-bottom">
+        <li>
+          <%= link_to root_path do %>
+            <%= image_tag 'logo.svg', class: 'breadcrumb__image--max-width', title: t('home') %>
+          <% end %>
+        </li>
+        <li class='breadcrumb-item'>
+          <%= link_to 'Examples', examples_path %>
+        </li>
+        <% fetch_breadcrumb_list.each_with_index do |(text, link), i| %>
+          <% last_item = i == fetch_breadcrumb_list.length - 1 %>
+          <li class="breadcrumb-item <%= 'active' if last_item %>" <%= 'aria-current="page"' if last_item %>>
+            <% if link.present? %>
+              <%= link_to link do %>
+                <%= text %>
+              <% end %>
+            <% else %>
+              <span id='breadcrumb-last'>
+                <%= text %>
+              </span>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    </nav>
+    <div class='container'>
+      <%= yield %>
+    </div>
+  </body>
+</html>

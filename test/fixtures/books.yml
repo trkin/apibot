@@ -1,0 +1,8 @@
+<% (1..Const.examples[:number_of_books]).each do |i| %>
+book_<%= i %>:
+  title: book_<%= i %>_title
+  description: Book <%= i %> description
+  price: $<%= i %>.00
+  no_of_likes: <%= i % 5 %> likes
+  published_at: 2020-01-<%= i % 30 %>
+<% end %>
