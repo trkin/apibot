@@ -19,8 +19,10 @@
 .icon-location-outline:before { content: '\e811'; } /* '' */
 .icon-megaphone:before { content: '\e812'; } /* '' */
 .icon-play-outline:before { content: '\e813'; } /* '' */
+.icon-fast-fw-outline:before { content: '\e814'; } /* '' */
 .icon-mail:before { content: '\e815'; } /* '' */
 .icon-cancel:before { content: '\e816'; } /* '' */
+.icon-stop-outline:before { content: '\e817'; } /* '' */
 .icon-spin2:before { content: '\e831'; } /* '' */
 .icon-link-ext:before { content: '\f08e'; } /* '' */
 .icon-twitter:before { content: '\f099'; } /* '' */

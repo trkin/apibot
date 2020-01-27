@@ -2,6 +2,7 @@ class RunsDatatable < TrkDatatables::ActiveRecord
   def columns
     {
       'runs.id': {},
+      'bot.id': { hide: true },
       'bot.name': {},
       'runs.status': {},
       'runs.log': {},
@@ -20,8 +21,9 @@ class RunsDatatable < TrkDatatables::ActiveRecord
       log = "<details><summary>#{run.log.first(run.log.index('<br>') || 100)}</summary>#{run.log}</details>".html_safe if run.log.present?
       [
         @view.link_to(run.id, run),
+        run.bot_id,
         @view.link_to(run.bot.name_or_start_url, @view.bot_path(run.bot)),
-        run.status,
+        @view.badge_for_status(run.status),
         log,
         run.finished_at,
       ]

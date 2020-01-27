@@ -3,9 +3,14 @@ class PagesDatatable < TrkDatatables::ActiveRecord
     {
       'pages.id': { title: 'PageID' },
       'pages.url': { title: 'Page URL' },
-      'pages.content': {},
       'pages.data': {},
+      '': {},
     }
+  end
+
+  def global_search_columns
+    # in addition to columns those fields will be used to match global search
+    %w[pages.content]
   end
 
   def all_items
@@ -16,11 +21,12 @@ class PagesDatatable < TrkDatatables::ActiveRecord
   def rows(filtered)
     # you can use @view.link_to and other helpers
     filtered.map do |page|
+      actions = @view.link_to('Content <i class="demo-icon icon-link-ext"></i>'.html_safe, @view.content_page_path(page), target: :_blank)
       [
         @view.link_to(page.id, page),
         page.url,
-        page.content.first(200),
         page.data.to_s,
+        actions,
       ]
     end
   end

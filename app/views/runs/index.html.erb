@@ -2,16 +2,4 @@
   breadcrumb Run.model_name.human(count: 2) => nil
 %>
 
-<div class='float-left'>
-  <input type='checkbox' id='toggle-active' class='toggle-active' />
-  <label for='toggle-active' class='text-primary'>
-    <i class="demo-icon icon-plus" aria-hidden="true"></i>
-    Run
-  </label>
-  <span class='toggle-active-target d-none-opacity'>
-    <% current_user.company.bots.each do |bot| %>
-      <%= button_to bot.name_or_start_url, runs_path(bot_id: bot.id), class: 'btn btn-sm btn-primary', form_class: 'd-inline' %>
-    <% end %>
-  </span>
-</div>
 <%= @datatable.render_html search_runs_path(format: :json) %>

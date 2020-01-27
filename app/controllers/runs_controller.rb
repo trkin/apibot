@@ -39,9 +39,20 @@ class RunsController < ApplicationUserController
   def create
     bot = current_user.company.bots.find(params[:bot_id])
     @run = bot.runs.create! status: Run::IN_QUEUE
-    RunJob.perform_later @run
+    if params[:run_now]
+      RunJob.perform_now @run
+    else
+      job = RunJob.perform_later @run
+      @run.job_id = job.job_id
+      @run.save!
+    end
 
     redirect_to run_path(@run), notice: helpers.t_notice('successfully_created', Run)
+  end
+
+  def cancel
+    ApplicationJob.cancel! @run.job_id
+    redirect_to run_path(@run), notice: "Job #{@run.job_id} should stop soon"
   end
 
   def update

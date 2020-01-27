@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     scope :examples do
       get :paginated_with_links, to: 'examples/paginated_with_links#index'
       get 'paginated_with_links/:id', to: 'examples/paginated_with_links#book', as: :paginated_with_links_book
+      get :sample_error, to: 'examples/application#sample_error', as: :sample_error
     end
 
     resource :sign_up
@@ -42,6 +43,7 @@ Rails.application.routes.draw do
       end
       member do
         post :inspect_all
+        post :cancel
       end
       resources :pages do
         collection do

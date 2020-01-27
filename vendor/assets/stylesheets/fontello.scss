@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'fontello';
-  src: font-url('fontello.eot?18716945');
-  src: font-url('fontello.eot?18716945#iefix') format('embedded-opentype'),
-       font-url('fontello.woff2?18716945') format('woff2'),
-       font-url('fontello.woff?18716945') format('woff'),
-       font-url('fontello.ttf?18716945') format('truetype'),
-       font-url('fontello.svg?18716945#fontello') format('svg');
+  src: font-url('fontello.eot?42427830');
+  src: font-url('fontello.eot?42427830#iefix') format('embedded-opentype'),
+       font-url('fontello.woff2?42427830') format('woff2'),
+       font-url('fontello.woff?42427830') format('woff'),
+       font-url('fontello.ttf?42427830') format('truetype'),
+       font-url('fontello.svg?42427830#fontello') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'fontello';
-    src: font-url('fontello.svg?18716945#fontello') format('svg');
+    src: font-url('fontello.svg?42427830#fontello') format('svg');
   }
 }
 */
@@ -75,8 +75,10 @@
 %icon-location-outline:before { @extend %icon-base; content: '\e811'; } /* '' */
 %icon-megaphone:before { @extend %icon-base; content: '\e812'; } /* '' */
 %icon-play-outline:before { @extend %icon-base; content: '\e813'; } /* '' */
+%icon-fast-fw-outline:before { @extend %icon-base; content: '\e814'; } /* '' */
 %icon-mail:before { @extend %icon-base; content: '\e815'; } /* '' */
 %icon-cancel:before { @extend %icon-base; content: '\e816'; } /* '' */
+%icon-stop-outline:before { @extend %icon-base; content: '\e817'; } /* '' */
 %icon-spin2:before { @extend %icon-base; content: '\e831'; } /* '' */
 %icon-link-ext:before { @extend %icon-base; content: '\f08e'; } /* '' */
 %icon-twitter:before { @extend %icon-base; content: '\f099'; } /* '' */
@@ -109,8 +111,10 @@
 .icon-location-outline { @extend %icon-location-outline; }
 .icon-megaphone { @extend %icon-megaphone; }
 .icon-play-outline { @extend %icon-play-outline; }
+.icon-fast-fw-outline { @extend %icon-fast-fw-outline; }
 .icon-mail { @extend %icon-mail; }
 .icon-cancel { @extend %icon-cancel; }
+.icon-stop-outline { @extend %icon-stop-outline; }
 .icon-spin2 { @extend %icon-spin2; }
 .icon-link-ext { @extend %icon-link-ext; }
 .icon-twitter { @extend %icon-twitter; }

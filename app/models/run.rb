@@ -5,6 +5,7 @@ class Run < ApplicationRecord
     IN_PROGRESS = :in_progress,
     FINISHED = :finished,
     FAILED = :failed,
+    CANCELLED = :cancelled,
   ]
 
   has_many :pages, dependent: :destroy

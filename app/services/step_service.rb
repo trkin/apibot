@@ -47,19 +47,31 @@ class StepService
       @run.pages.create! url: @session.current_url, content: @session.body
     end
     @run.finished_at = Time.zone.now
-    @run.finished!
+    if cancelled?
+      @run.status = :cancelled
+      logger 'CANCELLED'
+    else
+      @run.status = :finished
+      logger 'FINISHED'
+    end
+    @run.save!
     Result.new 'OK'
-  rescue Selenium::WebDriver::Error::ServerError, # when server breaks
+  rescue \
     Capybara::ElementNotFound, # also Capybara::ExpectationNotMet is incuded here
+    Selenium::WebDriver::Error::WebDriverError, # when server breaks
+    Addressable::URI::InvalidURIError, # when url contains space before http://
     Nokogiri::CSS::SyntaxError => e # this is when search with css and invalid selector
-    logger e.class.name + ' ' + e.message
+    logger '!!!!!!!!!! ' + e.class.name + ' ' + e.message
     @run.failed!
     Error.new e.message
+  # rescue StandardError => e
+    # let exception_notification notify us
   ensure
     @session.quit
   end
 
   def proccess_looped_actions_and_yield_url(url, completed_step_index: -1)
+    return if cancelled?
     @run.bot.steps.where(action: LOOPED_ACTIONS).each_with_index do |step, step_index|
       next if step_index <= completed_step_index # ignore since we already completed this step
       case step.action.to_sym
@@ -72,7 +84,7 @@ class StepService
         next_url = url
         # TODO move this limit to bot configuration
         limit_page_index = 0
-        while limit_page_index < 1000
+        while !cancelled? && limit_page_index < 1000
           logger "@session.visit step_index=#{step_index} next_url = #{next_url}"
           @session.visit next_url
           limit_page_index += 1
@@ -86,7 +98,7 @@ class StepService
             yield url
           end
         end
-        logger 'finished loop'
+        logger 'finished loop for VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR'
       when FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM
         @session.visit url
         links = @session.all step.locator
@@ -94,7 +106,7 @@ class StepService
           cached_hrefs = links.map { |link| link['href'] }
           cached_hrefs.each do |href|
             one_link = full_path(@session.current_url, href)
-            logger "one_link href=#{one_link}"
+            # logger "one_link href=#{one_link}"
             proccess_looped_actions_and_yield_url(one_link, completed_step_index: step_index) do |url|
               logger "FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM yield #{url}"
               yield url
@@ -106,7 +118,7 @@ class StepService
       end
     end
     if @run.bot.steps.where(action: LOOPED_ACTIONS).size - 1 == completed_step_index
-      logger "END proccess_looped_actions_and_yield_url yield url=#{url} completed_step_index=#{completed_step_index}"
+      # logger "END proccess_looped_actions_and_yield_url yield url=#{url} completed_step_index=#{completed_step_index}"
       yield url
     end
   end
@@ -143,5 +155,9 @@ class StepService
   def full_path(current_url, link)
     uri = URI current_url
     uri.merge link
+  end
+
+  def cancelled?
+    @cancelled ||= ApplicationJob.cancelled?(@run.job_id)
   end
 end

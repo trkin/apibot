@@ -57,6 +57,17 @@ class StepServiceTest < ApplicationSystemTestCase
     end
   end
 
+  test 'log error for failed step because of bad url' do
+    bot = companies(:my_company).bots.create! engine: Bot.engines[:mechanize], start_url: '  http://a.com'
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    assert_difference 'Page.count', 0 do
+      result = StepService.new(run).perform
+      refute result.success?
+      run.reload
+      assert_match 'InvalidURIError', run.log
+    end
+  end
+
   test 'steps to interact without looped action FIND_AND_CLICK' do
     # TODO click on search fill in name submit
   end
@@ -92,6 +103,19 @@ class StepServiceTest < ApplicationSystemTestCase
     assert_difference 'Page.count', expected_pages do
       result = StepService.new(run).perform
       assert result.success?
+    end
+  end
+
+  test 'stop VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR' do
+    bot = companies(:my_company).bots.create! engine: Bot.engines[:mechanize], start_url: add_host(paginated_with_links_path)
+    run = bot.runs.create! status: Run::IN_PROGRESS, job_id: '123'
+    bot.steps.create! action: StepService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
+    ApplicationJob.cancel! '123'
+    assert_difference 'Page.count', 0 do
+      result = StepService.new(run).perform
+      assert result.success?
+      run.reload
+      assert_match 'CANCELLED', run.log
     end
   end
 end

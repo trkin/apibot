@@ -5,7 +5,18 @@
   <div class='col-md-3'>
     <div class='card'>
       <div class='card-body'>
-        <% if @run.finished? %>
+        <% if @run.still_running? %>
+          Please wait untill run is finished.
+          <br>
+          Current number of pages is <%= @run.pages.size %>
+          <%= link_to 'Refresh', run_path(@run), class: 'btn btn-block btn-link' %>
+          <% if @run.job_id.present? %>
+            <%= button_to cancel_run_path(@run), class: 'btn btn-block btn-secondary' do %>
+              <i class="demo-icon icon-stop-outline" aria-hidden="true"></i>
+              Cancel
+            <% end %>
+          <% end %>
+        <% else %>
           <%= link_to run_path(@run, format: :csv), class: 'btn btn-block btn-primary' do %>
             <i class="demo-icon icon-doc-text" aria-hidden="true"></i>
             Generate CSV
@@ -14,10 +25,15 @@
             <i class="demo-icon icon-zoom-in-outline" aria-hidden="true"></i>
             Inspect all <%= pluralize @run.pages.count, 'page' %>
           <% end %>
-        <% else %>
-          Please wait untill run is finished.
-          <br>
-          Current number of pages is <%= @run.pages.size %>
+          <hr>
+          <%= button_to runs_path(bot_id: @run.bot.id), class: 'btn btn-block btn-primary' do %>
+            <i class="demo-icon icon-play-outline" aria-hidden="true"></i>
+            Rerun in background
+          <% end %>
+          <%= button_to runs_path(bot_id: @run.bot.id, run_now: true), class: 'btn btn-block btn-info mt-2' do %>
+            <i class="demo-icon icon-fast-fw-outline" aria-hidden="true"></i>
+            Rerun now
+          <% end %>
         <% end %>
       </div>
     </div>

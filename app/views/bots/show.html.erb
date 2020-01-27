@@ -7,10 +7,15 @@
       <div class='card-body'>
         <%= button_to runs_path(bot_id: @bot.id), class: 'btn btn-block btn-primary' do %>
           <i class="demo-icon icon-play-outline" aria-hidden="true"></i>
-          Run
+          Run in background
+        <% end %>
+        <%= button_to runs_path(bot_id: @bot.id, run_now: true), class: 'btn btn-block btn-info mt-2' do %>
+          <i class="demo-icon icon-fast-fw-outline" aria-hidden="true"></i>
+          Run now
         <% end %>
         <% if @bot.runs.present? %>
           <%= link_to 'Last run', run_path(@bot.runs.order(created_at: :asc).last), class: 'btn btn-link' %>
+          <%= link_to 'All runs', runs_path(RunsDatatable.param_set('bot.id', @bot.id)), class: 'btn btn-link' %>
         <% end %>
       </div>
     </div>

@@ -211,6 +211,18 @@
       "css": "link-ext",
       "code": 61582,
       "src": "fontawesome"
+    },
+    {
+      "uid": "f7b9bc563b87218a2ed804cc71a6eb9c",
+      "css": "fast-fw-outline",
+      "code": 59412,
+      "src": "typicons"
+    },
+    {
+      "uid": "4a770f766e0c1f06ce850db219684355",
+      "css": "stop-outline",
+      "code": 59415,
+      "src": "typicons"
     }
   ]
 }
