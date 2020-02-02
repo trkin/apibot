@@ -118,4 +118,15 @@ class StepServiceTest < ApplicationSystemTestCase
       assert_match 'CANCELLED', run.log
     end
   end
+
+  test 'FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM' do
+    bot = companies(:my_company).bots.create! engine: Bot.engines[:mechanize], start_url: add_host(paginated_with_links_path)
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    bot.steps.create! action: StepService::FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM, selector_type: :css, locator: '.card-body'
+    expected_pages = Const.examples[:per_page]
+    assert_difference 'Page.count', expected_pages do
+      result = StepService.new(run).perform
+      assert result.success?
+    end
+  end
 end

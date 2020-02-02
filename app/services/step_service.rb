@@ -7,6 +7,7 @@ class StepService
   LOOPED_ACTIONS = [
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR = :visit_page_find_link_and_visit_link_url_until_link_disappear,
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM = :find_all_links_loop_through_all_to_visit_them,
+    FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM = :find_all_elements_and_create_pages_from_them,
   ].freeze
   ALL_ACTIONS = ONE_TIME_ACTIONS + LOOPED_ACTIONS
   ALL_SELECTOR_TYPES = Capybara::Selector.all.keys
@@ -28,6 +29,7 @@ class StepService
     FILL_IN => [:fillable_field],
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR => [:css, :xpath, :link],
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM => [:css, :xpath, :link],
+    FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM => [:css, :xpath],
   }
   unless AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys == ALL_ACTIONS
     raise "please define all available selector type for #{ALL_ACTIONS - AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys}"
@@ -101,7 +103,7 @@ class StepService
         logger 'finished loop for VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR'
       when FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM
         @session.visit url
-        links = @session.all step.locator
+        links = @session.all step.selector_type.to_sym, step.locator
         if links.present?
           cached_hrefs = links.map { |link| link['href'] }
           cached_hrefs.each do |href|
@@ -112,6 +114,12 @@ class StepService
               yield url
             end
           end
+        end
+      when FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM
+        @session.visit url
+        elements = @session.all step.selector_type.to_sym, step.locator
+        elements.each do |element|
+          @run.pages.create! url: @session.current_url, content: element.native.to_html
         end
       else
         raise "unknown_step_action=#{step.action}"

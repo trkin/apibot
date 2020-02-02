@@ -9,6 +9,9 @@ Step if defined using:
 * `Action` one of the `L`
 * `Locator` for example `h1`. In general it can be `element_name`,
   `.css_class_name`, `[attribute_name='attribute_value']`.
+* regexp to filter text:
+  * `\d+` to get only digits
+  * `\S+(?: \S+)*` to get only one non space character between
 
 Advance step configuration includes:
 * `Enable log` to insert log messages
