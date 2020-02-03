@@ -44,7 +44,7 @@ class BotsController < ApplicationUserController
 
   def _bot_params
     params.require(:bot).permit(
-      *Bot::FIELDS
+      *Bot::FIELDS, config: Bot::CONFIG_BOOLEAN_KEYS,
     ).merge(
       company: current_user.company,
     )

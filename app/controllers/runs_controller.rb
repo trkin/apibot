@@ -13,6 +13,7 @@ class RunsController < ApplicationUserController
     respond_to do |format|
       format.html { @datatable = PagesDatatable.new view_context }
       format.csv { send_data @run.generate_csv, filename: "#{@run.bot.name}-#{Date.today}.csv" }
+      format.json { render json: @run.generate_json }
     end
   end
 

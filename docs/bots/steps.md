@@ -23,6 +23,8 @@ Capybara#find https://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node
 More info [Capybara::Selector](https://rubydoc.info/github/teamcapybara/capybara/master/Capybara/Selector)
 Locator can be `id`, `name`, `value`, `title`, `alt` attribute or string content
 of the element.
+It is case sensitive so you need to inspect to make sure it matches the case
+(css can use `text-transform: uppercase;` so it might look upcase)
 
 
 ## visit_link_until_it_disappear

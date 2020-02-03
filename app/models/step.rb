@@ -9,9 +9,4 @@ class Step < ApplicationRecord
   enum action: (StepService::ONE_TIME_ACTIONS + StepService::LOOPED_ACTIONS).each_with_object({}) { |k, o| o[k] = k.to_s }
 
   validates :action, :locator, presence: true
-
-  def convert_from_array_to_filters_hash(keys, values)
-    self
-    self.filters
-  end
 end

@@ -1,4 +1,4 @@
-class StepsController < ApplicationController
+class StepsController < ApplicationUserController
   before_action :_set_step, except: %i[index search new create]
   before_action :_set_bot, only: %i[index search new create]
 

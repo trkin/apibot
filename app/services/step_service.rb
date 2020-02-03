@@ -62,12 +62,15 @@ class StepService
     Capybara::ElementNotFound, # also Capybara::ExpectationNotMet is incuded here
     Selenium::WebDriver::Error::WebDriverError, # when server breaks
     Addressable::URI::InvalidURIError, # when url contains space before http://
+    # URI::InvalidURIError, # when url contains non ascee /komentar-dana/vise-od-nebrige-\u2013-treba-li-stranci-da-nam-biraju-vladu-i-pisu-ustav.html
     Nokogiri::CSS::SyntaxError => e # this is when search with css and invalid selector
     logger '!!!!!!!!!! ' + e.class.name + ' ' + e.message
     @run.failed!
     Error.new e.message
-  # rescue StandardError => e
+  rescue StandardError => e
+    # you can use here for de-bug
     # let exception_notification notify us
+    raise e
   ensure
     @session.quit
   end
@@ -94,7 +97,7 @@ class StepService
           next_link = @session.first(step.selector_type.to_sym, step.locator)
           raise ArgumentError, "#{next_link.inspect} does not have href" unless next_link['href'].present?
           next_url = full_path(@session.current_url, next_link['href'])
-          # logger "--------next_url = #{next_url}"
+          logger "--------next_url = #{next_url}"
           proccess_looped_actions_and_yield_url(next_url, completed_step_index: step_index) do |url|
             logger "VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR yield #{url}"
             yield url
@@ -163,6 +166,8 @@ class StepService
   def full_path(current_url, link)
     uri = URI current_url
     uri.merge link
+  rescue URI::InvalidURIError => e
+    uri.merge URI.escape(link)
   end
 
   def cancelled?

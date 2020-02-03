@@ -3,6 +3,9 @@
     <%= f.text_field :start_url %>
     <%= f.text_field :name %>
     <%= f.select :engine, Bot.engines %>
+    <% Bot::CONFIG_BOOLEAN_KEYS.each do |key| %>
+      <%= f.check_box key, name: "#{f.object.class.name.underscore}[config][#{key}]", checked: f.object.config&.dig(key) == '1', label: key.to_s.titleize %>
+    <% end %>
     <div class='remote-form__actions'>
       <% unless @bot.new_record? %>
         <%= link_to bot_path(@bot), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@bot.name), title: t_crud('delete', Bot), class: 'btn btn-outline-danger' do %>

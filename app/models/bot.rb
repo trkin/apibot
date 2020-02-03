@@ -1,5 +1,8 @@
 class Bot < ApplicationRecord
-  FIELDS = %i[start_url name engine].freeze
+  FIELDS = %i[start_url name engine config].freeze
+  CONFIG_BOOLEAN_KEYS = %i[show_meta_data]
+  serialize :config, Hash
+
   belongs_to :company
 
   has_many :inspects, dependent: :destroy

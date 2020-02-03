@@ -25,4 +25,18 @@ class Run < ApplicationRecord
       end
     end
   end
+
+  def generate_json
+    result = pages.map do |page|
+      if bot.config[:show_meta_data] == '1'
+        page.data.merge(
+          url: page.url,
+          show: Rails.application.routes.url_helpers.page_url(page),
+        )
+      else
+        page.data
+      end
+    end
+    result.to_json
+  end
 end

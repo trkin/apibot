@@ -68,6 +68,18 @@ class StepServiceTest < ApplicationSystemTestCase
     end
   end
 
+  test 'it works even with non asci chars in url on links' do
+    bot = companies(:my_company).bots.create! engine: Bot.engines[:mechanize], start_url: add_host(non_ascii_path)
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    bot.steps.create! action: StepService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
+    bot.steps.create! action: StepService::FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM, selector_type: :link, locator: 'шoу'
+    expected_pages = 2
+    assert_difference 'Page.count', expected_pages do
+      result = StepService.new(run).perform
+      assert result.success?
+    end
+  end
+
   test 'steps to interact without looped action FIND_AND_CLICK' do
     # TODO click on search fill in name submit
   end
@@ -77,6 +89,18 @@ class StepServiceTest < ApplicationSystemTestCase
     run = bot.runs.create! status: Run::IN_PROGRESS
     bot.steps.create! action: StepService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
     expected_pages = Const.examples[:number_of_books] / Const.examples[:per_page] + ((Const.examples[:number_of_books] % Const.examples[:per_page]).zero? ? 0 : 1)
+    assert_difference 'Page.count', expected_pages do
+      result = StepService.new(run).perform
+      assert result.success?
+    end
+  end
+
+  test 'pagination using Next VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR if there is only one page' do
+    last_page = Const.examples[:number_of_books] / Const.examples[:per_page] + ((Const.examples[:number_of_books] % Const.examples[:per_page]).zero? ? 0 : 1)
+    bot = companies(:my_company).bots.create! engine: Bot.engines[:mechanize], start_url: add_host(paginated_with_links_path(page: last_page))
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    bot.steps.create! action: StepService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
+    expected_pages = 1
     assert_difference 'Page.count', expected_pages do
       result = StepService.new(run).perform
       assert result.success?
@@ -100,6 +124,23 @@ class StepServiceTest < ApplicationSystemTestCase
     bot.steps.create! action: StepService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
     bot.steps.create! action: StepService::FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM, selector_type: :css, locator: '.card-title a'
     expected_pages = Const.examples[:number_of_books]
+    assert_difference 'Page.count', expected_pages do
+      result = StepService.new(run).perform
+      assert result.success?
+    end
+  end
+
+  test 'FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM and VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR if there is only one page' do
+    last_page = Const.examples[:number_of_books] / Const.examples[:per_page] + ((Const.examples[:number_of_books] % Const.examples[:per_page]).zero? ? 0 : 1)
+    bot = companies(:my_company).bots.create! engine: Bot.engines[:mechanize], start_url: add_host(paginated_with_links_path(page: last_page))
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    bot.steps.create! action: StepService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
+    bot.steps.create! action: StepService::FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM, selector_type: :css, locator: '.card-title a'
+    expected_pages = if (Const.examples[:number_of_books] % Const.examples[:per_page]).zero?
+                       Const.examples[:number_of_books]
+                     else
+                       Const.examples[:number_of_books] % Const.examples[:per_page]
+                     end
     assert_difference 'Page.count', expected_pages do
       result = StepService.new(run).perform
       assert result.success?

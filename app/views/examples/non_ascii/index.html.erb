@@ -1,0 +1,6 @@
+<div class='card-title'>
+  <%# this will work since rails will properly escape url %>
+  <%= link_to 'шoу', show_non_ascii_path %>
+  <%# this will not work in unless we use URI.escape(link) and than visit %>
+  <%= link_to 'шoу', '/examples/шoу' %>
+</div>

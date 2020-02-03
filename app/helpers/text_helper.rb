@@ -31,34 +31,43 @@ module TextHelper
   end
 
   def short_time_with_tooltip(time)
-    return '' unless time.present?
+    return '' if time.blank?
 
     "<span title='#{time.to_s :long}'>#{time.to_s :short}</span>".html_safe
   end
 
-  def detail_view_list(item, *fields, label_class: 'col-sm-2 dt__long--min-width')
+  def detail_view_list(item = nil, *fields, label_class: 'col-sm-2 dt__long--min-width', skip_blank: [])
     content_tag 'dl', class: 'row' do
-      detail_view item, *fields, label_class: label_class
+      if block_given?
+        yield
+      else
+        detail_view item, *fields, label_class: label_class, skip_blank: skip_blank
+      end
     end
   end
 
   # if you use two detail views than label_class: 'col-sm-4'
-  def detail_view(item, *fields, label_class: 'col-sm-2')
+  def detail_view(item, *fields, label_class: 'col-sm-2 dt__long--min-width', skip_blank: [])
     res = fields.map do |field|
-      <<~HTML
-        <dt class='#{label_class}'>#{item.class.send :human_attribute_name, field}</dt>
-        <dd class='col'>#{item.send field}</dd>
-        <dt class='w-100'></dt>
-      HTML
-        .html_safe
+      if (skip_blank == :all || skip_blank.include?(field)) && item.send(field).blank? ||
+         (item.respond_to?("visible_#{field}") && item.send("visible_#{field}") != true)
+        ''.html_safe
+      else
+        <<~HTML
+          <dt class='#{label_class}'>#{item.class.send :human_attribute_name, field}</dt>
+          <dd class='col'>#{item.send field}</dd>
+          <dt class='w-100'></dt>
+        HTML
+          .html_safe
+      end
     end
     safe_join res
   end
 
-  def detail_view_one(title, text, label_class: 'col-sm-2', text_class: 'col')
+  def detail_view_one(title, text = nil, label_class: 'col-sm-2 dt__long--min-width', text_class: 'col', &block)
     <<~HTML
       <dt class='#{label_class}'>#{title}</dt>
-      <dd class='#{text_class}'>#{text}</dd>
+      <dd class='#{text_class}'>#{block_given? ? capture(&block) : text}</dd>
       <dt class='w-100'></dt>
     HTML
       .html_safe
@@ -122,4 +131,22 @@ module TextHelper
       end
     end
   end
+
+  # f.text_field :phone,
+  #              help: f.object.a_phone.blank? && add_alternative_helper(User.human_attribute_name(:a_phone), '#a_phone')
+  # <div id='a_phone' class='<%= 'd-none-display' if f.object.a_phone.blank? %>'>
+  #   <%= f.text_field :a_phone, skip_label: true, placeholder: true %>
+  def add_alternative_helper(text, selector)
+    <<~HTML
+      <div data-controller='activate'
+           data-action='click->activate#toggleAndRemoveMe'
+           data-activate-selector='#{selector}'
+           >
+           #{t('add')} #{text}
+       </div>
+    HTML
+      .html_safe
+  end
+
+  # For enums you can use User.human_enum_name :status, user.status
 end
