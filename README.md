@@ -15,6 +15,10 @@ for example `h1` header text or array of `#my-list li` items.
 
 The simplest way is to provide a link to a page and return text from the page.
 
+# Keywords
+
+Web Scraping, Data Scraping, Data Mining, Data Extraction, Data Science,
+Microsoft Excel, Extract, Transform and Load (ETL), Data Migration, Web Crawling
 
 # Configuration
 

@@ -1,8 +1,13 @@
 <div id='remote-form'>
   <%= bootstrap_form_with model: @inspect, url: @inspect.new_record? ? bot_inspects_path(@inspect.bot) : inspect_path(@inspect) do |f| %>
     <%= f.text_field :name %>
-    <%= f.text_field :target %>
+    <%= f.text_field :target, help: "css selector like <code>.class</code> or <code>p::first-letter</code> <a href='https://www.w3.org/TR/selectors-3/#selectors'>reference</a>".html_safe %>
     <%= f.text_field :regexp %>
+    <small>
+      <b>Regexp</b> is used to filter target text, matches are scanned and joined  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>:<br>
+      <code>\d+</code> to get only digits<br>
+      <code>\S+(?: \S+)*</code> to get only one non space character between
+    </small>
     <div class='remote-form__actions'>
       <% unless @inspect.new_record? %>
         <%= link_to inspect_path(@inspect), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@inspect.name), title: 'Delete inspect', class: 'btn btn-outline-danger' do %>

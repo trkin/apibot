@@ -17,9 +17,13 @@
             <% end %>
           <% end %>
         <% else %>
-          <%= link_to run_path(@run, format: :csv), class: 'btn btn-block btn-primary' do %>
+          <%= link_to run_path(@run, format: :csv), class: 'btn btn-link' do %>
             <i class="demo-icon icon-doc-text" aria-hidden="true"></i>
-            Generate CSV
+            CSV
+          <% end %>
+          <%= link_to run_path(@run, format: :json), class: 'btn btn-link' do %>
+            <i class="demo-icon icon-doc-text" aria-hidden="true"></i>
+            JSON
           <% end %>
           <%= button_to inspect_all_run_path(@run), class: 'btn btn-block btn-secondary mt-2' do %>
             <i class="demo-icon icon-zoom-in-outline" aria-hidden="true"></i>

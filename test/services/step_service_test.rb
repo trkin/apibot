@@ -41,7 +41,7 @@ class StepServiceTest < ApplicationSystemTestCase
       refute result.success?
       assert_equal "expected to find link or button \"unknown_element\" at least 1 time but there were no matches", result.message
       run.reload
-      assert_match "Capybara::ExpectationNotMet expected to find link or button \"unknown_element\" at least 1 time but there were no matches", run.log
+      assert_match "Capybara::ExpectationNotMet expected to find link or button \"unknown_element\" at least 1 time but there were no matches", run.error_log
     end
   end
 
@@ -53,7 +53,7 @@ class StepServiceTest < ApplicationSystemTestCase
       result = StepService.new(run).perform
       refute result.success?
       run.reload
-      assert_match 'Nokogiri::CSS::SyntaxError unexpected', run.log
+      assert_match 'Nokogiri::CSS::SyntaxError unexpected', run.error_log
     end
   end
 
@@ -64,7 +64,7 @@ class StepServiceTest < ApplicationSystemTestCase
       result = StepService.new(run).perform
       refute result.success?
       run.reload
-      assert_match 'InvalidURIError', run.log
+      assert_match 'InvalidURIError', run.error_log
     end
   end
 
@@ -169,5 +169,22 @@ class StepServiceTest < ApplicationSystemTestCase
       result = StepService.new(run).perform
       assert result.success?
     end
+  end
+
+  test 'VISIT_LINKS_FROM_JSON_ARRAY' do
+    json_path = '/a.json'
+    json_array = [{id: Book.first.id}]
+    File.open("public/#{json_path}", 'w') do |f|
+      f.write json_array.to_json
+    end
+    bot = companies(:my_company).bots.create! engine: Bot.engines[:mechanize], start_url: add_host(json_path)
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    bot.steps.create! action: StepService::VISIT_LINKS_FROM_JSON_ARRAY, selector_type: :data_store, locator: add_host(paginated_with_links_path + '/{{id}}')
+    expected_pages = 1
+    assert_difference 'Page.count', expected_pages do
+      result = StepService.new(run).perform
+      assert result.success?
+    end
+    File.delete("public/#{json_path}") if File.exist?("public/#{json_path}")
   end
 end

@@ -1,5 +1,5 @@
 class Run < ApplicationRecord
-  FIELDS = %i[status log finished_at].freeze
+  FIELDS = %i[status log error_log finished_at].freeze
   STATUSES = [
     IN_QUEUE = :in_queue,
     IN_PROGRESS = :in_progress,
@@ -28,14 +28,7 @@ class Run < ApplicationRecord
 
   def generate_json
     result = pages.map do |page|
-      if bot.config[:show_meta_data] == '1'
-        page.data.merge(
-          url: page.url,
-          show: Rails.application.routes.url_helpers.page_url(page),
-        )
-      else
-        page.data
-      end
+      page.data
     end
     result.to_json
   end

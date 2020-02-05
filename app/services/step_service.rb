@@ -8,6 +8,7 @@ class StepService
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR = :visit_page_find_link_and_visit_link_url_until_link_disappear,
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM = :find_all_links_loop_through_all_to_visit_them,
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM = :find_all_elements_and_create_pages_from_them,
+    VISIT_LINKS_FROM_JSON_ARRAY = :visit_links_from_json_array,
   ].freeze
   ALL_ACTIONS = ONE_TIME_ACTIONS + LOOPED_ACTIONS
   ALL_SELECTOR_TYPES = Capybara::Selector.all.keys
@@ -30,6 +31,7 @@ class StepService
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR => [:css, :xpath, :link],
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM => [:css, :xpath, :link],
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM => [:css, :xpath],
+    VISIT_LINKS_FROM_JSON_ARRAY => [:data_store]
   }
   unless AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys == ALL_ACTIONS
     raise "please define all available selector type for #{ALL_ACTIONS - AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys}"
@@ -44,7 +46,7 @@ class StepService
     @run.in_progress!
     logger "START #{@run.bot.start_url}"
     proccess_looped_actions_and_yield_url(@run.bot.start_url) do |url|
-      process_actions_to_set_session_to_target_page url
+      process_one_time_actions_to_set_session_to_target_page url
       logger "******** pages.create session.current_url=#{@session.current_url}"
       @run.pages.create! url: @session.current_url, content: @session.body
     end
@@ -61,11 +63,11 @@ class StepService
   rescue \
     Capybara::ElementNotFound, # also Capybara::ExpectationNotMet is incuded here
     Selenium::WebDriver::Error::WebDriverError, # when server breaks
+    Net::HTTPNotFound, # when there is 404 page
     Addressable::URI::InvalidURIError, # when url contains space before http://
     # URI::InvalidURIError, # when url contains non ascee /komentar-dana/vise-od-nebrige-\u2013-treba-li-stranci-da-nam-biraju-vladu-i-pisu-ustav.html
     Nokogiri::CSS::SyntaxError => e # this is when search with css and invalid selector
-    logger '!!!!!!!!!! ' + e.class.name + ' ' + e.message
-    @run.failed!
+    logger_error e.class.name + ' ' + e.message
     Error.new e.message
   rescue StandardError => e
     # you can use here for de-bug
@@ -122,7 +124,23 @@ class StepService
         @session.visit url
         elements = @session.all step.selector_type.to_sym, step.locator
         elements.each do |element|
-          @run.pages.create! url: @session.current_url, content: element.native.to_html
+          # for mechanize element.native.class is Nokogiri::XML::Element so we
+          # for selenium element.native.class is Selenium::WebDriver::Element
+          content = if @run.bot.engine == 'mechanize'
+                      element.native.to_html
+                    else
+                      element.native['outerHTML']
+                    end
+          @run.pages.create! url: @session.current_url, content: content
+        end
+      when VISIT_LINKS_FROM_JSON_ARRAY
+        json_array.each do |json_array_item|
+          result = TemplateRenderService.new(step.locator, json_array_item).render
+          if result.success?
+            yield result.message
+          else
+            logger_error result.message
+          end
         end
       else
         raise "unknown_step_action=#{step.action}"
@@ -134,7 +152,7 @@ class StepService
     end
   end
 
-  def process_actions_to_set_session_to_target_page(url)
+  def process_one_time_actions_to_set_session_to_target_page(url)
     @session.visit url
     @run.bot.steps.where(action: ONE_TIME_ACTIONS).each do |step|
       case step.action.to_sym
@@ -162,6 +180,15 @@ class StepService
     @run.save!
   end
 
+  def logger_error(msg)
+    if @run.error_log.present?
+      @run.error_log += "<br>#{msg}"
+    else
+      @run.error_log = msg
+    end
+    @run.failed!
+  end
+
   # link could be ?a=2, or /path or full url http://a.b/path
   def full_path(current_url, link)
     uri = URI current_url
@@ -172,5 +199,16 @@ class StepService
 
   def cancelled?
     @cancelled ||= ApplicationJob.cancelled?(@run.job_id)
+  end
+
+  def json_array
+    return @json_array if defined? @json_aarray
+    uri = URI @run.bot.start_url
+    response_body = Net::HTTP.get uri
+    @json_array = JSON.parse response_body
+  rescue \
+    Net::HTTPNotFound => e # when there is 404 page
+    logger_error "json_array #{@run.bot.start_url} e=#{e.message}"
+    []
   end
 end

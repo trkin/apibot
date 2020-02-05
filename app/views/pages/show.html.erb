@@ -23,6 +23,11 @@
         </div>
         <%= detail_view_list @page, *([:id] + Page::FIELDS - [:content]) %>
         <%= link_to 'Content <i class="demo-icon icon-link-ext"></i>'.html_safe, content_page_path(@page), target: :_blank %>
+        <% if @page.content.size < 1000 %>
+          <code>
+            <%= @page.content %>
+          </code>
+        <% end %>
       </div>
     </div>
   </div>
