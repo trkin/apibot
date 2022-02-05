@@ -1,12 +1,29 @@
 <div id='remote-form'>
   <%= bootstrap_form_with model: @inspect, url: @inspect.new_record? ? bot_inspects_path(@inspect.bot) : inspect_path(@inspect) do |f| %>
-    <%= f.text_field :name %>
-    <%= f.text_field :target, help: "css selector like <code>.class</code> or <code>p::first-letter</code> <a href='https://www.w3.org/TR/selectors-3/#selectors'>reference</a>".html_safe %>
-    <%= f.text_field :regexp %>
+    <div class='row'>
+      <div class='col-md-6'>
+        <%= f.text_field :name %>
+        <%= f.text_field :target, help: "css selector like <code>.class</code> or <code>td:nth-child(1)</code> <a href='https://www.w3.org/TR/selectors-3/#selectors'>reference</a>".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
+        <%= f.text_field :regexp %>
+        <%= f.select :value_target, Inspect::VALUE_TARGETS %>
+      </div>
+      <div class='col-md-6'>
+        <code>
+          <%= @inspect.bot.last_page.content %>
+        </code>
+        <dl>
+          <dt>Result</dt>
+          <dd>
+            <%= text_field_tag 'preview', @inspect.bot.last_page.data[@inspect.name], class: 'w-100' %>
+          </dd>
+        </dl>
+      </div>
+    </div>
     <small>
       <b>Regexp</b> is used to filter target text, matches are scanned and joined  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>:<br>
       <code>\d+</code> to get only digits<br>
-      <code>\S+(?: \S+)*</code> to get only one non space character between
+      <code>\S+(?: \S+)*</code> to get only one non space character between<br>
+      <code>\S+@\S+</code> to get email surrounded by white space
     </small>
     <div class='remote-form__actions'>
       <% unless @inspect.new_record? %>

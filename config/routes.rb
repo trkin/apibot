@@ -15,13 +15,18 @@ Rails.application.routes.draw do
 
     get :examples, to: 'examples/application#index'
     scope :examples do
+      get :sample_page, to: 'examples/sample#index'
+      get :action_move_to_and_click, to: 'examples/sample#action_move_to_and_click'
+      get :non_ascii, to: 'examples/sample#non_ascii', as: :non_ascii
+      get 'шoу', to: 'examples/sample#show_non_ascii_in_link', as: :show_non_ascii_in_link
+      get :sign_in_required, to: 'examples/sign_in_required#index'
+      get :sign_in_required_login, to: 'examples/sign_in_required#login'
+      post :sign_in_required_submit_login, to: 'examples/sign_in_required#submit_login'
       get :paginated_with_links, to: 'examples/paginated_with_links#index'
       get 'paginated_with_links/:id', to: 'examples/paginated_with_links#book', as: :paginated_with_links_book
       get :paginated_with_errors, to: 'examples/paginated_with_errors#index'
       get 'paginated_with_errors/:id', to: 'examples/paginated_with_errors#book', as: :paginated_with_errors_book
-      get :sample_error, to: 'examples/application#sample_error', as: :sample_error
-      get :non_ascii, to: 'examples/non_ascii#index', as: :non_ascii
-      get 'шoу', to: 'examples/non_ascii#show', as: :show_non_ascii
+      get :sample_error, to: 'examples/application#sample_error'
     end
 
     resource :sign_up
@@ -32,14 +37,10 @@ Rails.application.routes.draw do
       end
       resources :inspects do
         collection do
-          post :search
+          get :calculate
         end
       end
-      resources :steps do
-        collection do
-          post :search
-        end
-      end
+      resources :steps
     end
     resources :runs do
       collection do

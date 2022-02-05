@@ -16,32 +16,44 @@
     <% if current_user %>
       <%= link_to 'Go to dashboard', dashboard_path, class: 'btn btn-warning rounded-pill px-4 text-light' %>
     <% else %>
-      <h4>Create new account</h4>
-      <p>Start scraping after you sign up</p>
-      <div class='mt-5 mb-5'>
-        <%= bootstrap_form_for @sign_up_company_form, url: sign_up_path, html: { 'data-validate': true } do |f| %>
-          <div class='row'>
-            <div class='col-sm-6 col-md-4 offset-md-2'>
-              <%= f.email_field :email, placeholder: 'Enter Your Email', required: true, class: '' %>
-              <%= f.password_field :password, placeholder: 'Enter Your Password', required: true, class: '' %>
+      <% if Const.first_company.nil? %>
+        <h3>First time user</h3>
+      <% end %>
+      <% if Const.first_company.nil? || Const.first_company.enable_sign_up %>
+        <h4>Create new account</h4>
+        <p>Start scraping after you sign up</p>
+        <div class='mt-5 mb-5'>
+          <%= bootstrap_form_for @sign_up_company_form, url: sign_up_path, html: { 'data-validate': true } do |f| %>
+            <div class='row'>
+              <div class='col-sm-6 col-md-4 offset-md-2'>
+                <%= f.email_field :email, placeholder: 'Enter Your Email', required: true, class: '' %>
+                <%= f.password_field :password, placeholder: 'Enter Your Password', required: true, class: '' %>
+              </div>
+              <div class='col-sm-6 col-md-4'>
+                <%= f.text_field :company, placeholder: 'Enter Company Name', required: true %>
+                <%= f.text_field :name, placeholder: 'Enter Your Name', required: true, class: '' %>
+              </div>
+              <% if Const.first_company.nil? %>
+                <div class='col-sm-12'>
+                  <%= f.check_box :enable_sign_up, label: 'Enable sign up for other users after this first company registration.' %>
+                </div>
+              <% end %>
             </div>
-            <div class='col-sm-6 col-md-4'>
-              <%= f.text_field :company, placeholder: 'Enter Company Name', required: true %>
-              <%= f.text_field :name, placeholder: 'Enter Your Name', required: true, class: '' %>
+            <div class='row'>
+              <div class='col-md-8 offset-md-2'>
+                <%= f.submit 'SIGN UP', class: 'btn btn-block btn-primary font-weight-bold text-uppercase' %>
+              </div>
             </div>
-          </div>
-          <div class='row'>
-            <div class='col-md-8 offset-md-2'>
-              <%= f.submit 'SIGN UP', class: 'btn btn-block btn-primary font-weight-bold text-uppercase' %>
-            </div>
-          </div>
-        <% end %>
-      </div>
+          <% end %>
+        </div>
+      <% else %>
+        Sign up is not enabled. Please <%= link_to 'contact the superadmin', contact_path %>
+      <% end %>
     <% end %>
   </div>
   <div class='py-5 bg-secondary text-center'>
     <h2 class='text-center'>How it works ?</h2>
-    <p>Checkout <%= link_to 'example sites', examples_path, class: 'btn btn-success' %></p>
+    <p>See <%= link_to 'example bots', examples_path, class: 'btn btn-success' %></p>
     <div class='d-flex flex-column flex-sm-row justify-content-around align-items-center'>
       <div class='d-flex flex-column flex-md-row'>
         <div>

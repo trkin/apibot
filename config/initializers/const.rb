@@ -16,9 +16,13 @@ class Const
     )
   end
 
+  def self.first_company
+    Company.order(created_at: :asc).first
+  end
+
   def self.examples
     hash_or_error_if_key_does_not_exists(
-      number_of_books: 20,
+      number_of_books: 40,
       per_page: 9,
     )
   end

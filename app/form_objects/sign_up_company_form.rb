@@ -1,7 +1,7 @@
 class SignUpCompanyForm
   include ActiveModel::Model
 
-  FIELDS = %i[company name email password].freeze
+  FIELDS = %i[company name email password enable_sign_up].freeze
   attr_accessor(*FIELDS)
   attr_accessor :user
   validates(*FIELDS, presence: true)
@@ -10,6 +10,7 @@ class SignUpCompanyForm
     return false unless valid?
 
     new_company = Company.new name: company
+    new_company.enable_sign_up = enable_sign_up if Const.first_company.nil?
     @user = User.new email: email, password: password, password_confirmation: password, company: new_company
     @user.skip_confirmation! if User.all.count.zero? # this will just add confirmed_at = Time.now
     unless @user.save

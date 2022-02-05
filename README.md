@@ -1,19 +1,79 @@
-# ApiBot
+# ApiBot a scheduled crawler
 
-Opensource tool that you can use to fetch some data from internet. In the app
-you can create `Bot` which will start the browser (if javascript is required you
-can use headless chrome instead of mechanize), click on page elements, fill
-inputs and submit forms so it can get to the desired page which is saved. It
-follows https://github.com/teamcapybara/capybara dsl.
+Opensource tool that you can host on your machine and use it for your scraping
+needs.
 
+# Start the app
 
-Saved page is processed by `Inspects` to return some data from the given html,
-for example `h1` header text or array of `#my-list li` items.
+Heroku, Docker
 
+# Basic usage
 
-# Example
+When you start the app you can register first `User`. It will be a superadmin
+which can manage other users on the platform. It is fine if there is only one
+user, but in case you want have other projects that need scrapping, you can
+create another `Company` and add other users to it.
 
-The simplest way is to provide a link to a page and return text from the page.
+Scrapping is performed in two steps, first is to download a html page using a
+`Bot` and second is to parse downloaded data using `Inspect`.
+
+`Bot` is defined with starting url and engine. If the site does not require
+javascript than you can choose `mechanize` engine, otherwise you can choose
+`selenium_chrome` or `headless_selenium_chrome`. If target data is not on the
+starting url than you can perform various `Step`s to get to it: click on page
+elements, fill inputs and submit forms.
+
+Main purpose of a bot when we `Run` it, is to get to the desired `Page` with
+data we need (using `PageService`) and to perform inspection (using
+`InspectService`).
+
+# Step Service
+
+For example if you want to grab header text from url  than you do not need any
+steps, initial `Page` will containt `...<h1>My Header</h1>...` so you just need
+to inspect that html.
+
+TODO: add examples
+
+Another example is that you need to navigate using `find_and_click` and `fill_in`
+steps, for example you need to log in.
+
+Another example is that
+in which case result is json object. Another
+way is that steps uses some of the Looped actions that generate array
+`<tr><td>Item1</td><td>1</td></tr>` and `<tr><td>Item2</td><td>2</td></tr>`. In
+this case result is array of object that represents data on each page fragment.
+
+Saved html is processed by `Inspect` to return data in clear formated format
+(without html tags and spaces).
+For that we are using Nokogiri
+https://github.com/sparklemotion/nokogiri/wiki/Cheat-sheet
+For example for page `...<h1>My Header</h1>...` we can inspect `header: h1`, and
+for table example we can inspect `name: td:nth-child(1)` and `count:
+td:nth-child(2)`.
+Generated data might look as an object with string values
+```
+{
+  data: {
+    header: 'My Header'
+  }
+}
+```
+or an array of objects with string values
+```
+{
+  data: [
+    {
+      name: 'Item1',
+      count: '1'
+    },
+    {
+      name: 'Item2',
+      count: '2'
+    }
+  ]
+}
+```
 
 # Keywords
 

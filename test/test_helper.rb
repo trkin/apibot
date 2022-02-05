@@ -18,6 +18,8 @@ class ActiveSupport::TestCase
   include TranslateHelper
   # devise method: sign_in user
   include Devise::Test::IntegrationHelpers
+  # stub_bot_start_url
+  include WebmockHelper
 
   def assert_valid_fixture(items)
     assert items.map(&:valid?).all?, (items.reject(&:valid?).map { |c| (c.respond_to?(:name) ? "#{c.name} " : '') + c.errors.full_messages.to_sentence })

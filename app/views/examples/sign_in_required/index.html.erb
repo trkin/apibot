@@ -1,0 +1,6 @@
+<%
+    breadcrumb 'Sign in required': nil
+%>
+<span id='my-account'>Hello <%= session[:username] %></span>
+
+<%= button_to 'Log out', sign_in_required_submit_login_path %>

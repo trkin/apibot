@@ -2,53 +2,102 @@
   breadcrumb Bot.model_name.human(count: 2) => bots_path, @bot.name => nil
 %>
 <div class='row'>
-  <div class='col-md-3'>
-    <div class='card'>
-      <div class='card-body'>
-        <%= button_to runs_path(bot_id: @bot.id), class: 'btn btn-block btn-primary' do %>
-          <i class="demo-icon icon-play-outline" aria-hidden="true"></i>
-          Run in background
-        <% end %>
-        <%= button_to runs_path(bot_id: @bot.id, run_now: true), class: 'btn btn-block btn-info mt-2' do %>
-          <i class="demo-icon icon-fast-fw-outline" aria-hidden="true"></i>
-          Run now
-        <% end %>
-        <% if @bot.runs.present? %>
-          <%= link_to 'Last run', run_path(@bot.runs.order(created_at: :asc).last), class: 'btn btn-link' %>
-          <%= link_to 'All runs', runs_path(RunsDatatable.param_set('bot.id', @bot.id)), class: 'btn btn-link' %>
-        <% end %>
-      </div>
-    </div>
-  </div>
   <div class='col-md-9'>
     <div class='card'>
       <div class='card-body'>
         <%= button_tag_open_modal edit_bot_path(@bot), title: t_crud('edit', Bot), pull_right: true %>
         <%= detail_view_list do %>
           <%= detail_view_one 'Start URL', link_to(@bot.start_url.html_safe + '<i class="demo-icon icon-link-ext"></i>'.html_safe, @bot.start_url, target: :_blank) %>
-          <%= detail_view @bot, *(Bot::FIELDS - [:start_url]) %>
+          <%= detail_view_one 'Name' do %>
+            <%= content_tag :span, @bot.name, 'data-test': 'bot-name' %>
+          <% end %>
+          <%= detail_view @bot, *(Bot::FIELDS - %i[start_url name]) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class='col-md-3'>
+    <div class='card'>
+      <div class='card-body text-center'>
+        <%= button_to runs_path(bot_id: @bot.id, run_now: true, redirect_to: bot_path(@bot)), class: 'btn btn-block btn-info mb-2' do %>
+          <i class="demo-icon icon-play-outline" aria-hidden="true"></i>
+          Run now
+        <% end %>
+        <%= button_to runs_path(bot_id: @bot.id, redirect_to: bot_path(@bot)), class: 'btn btn-block btn-primary' do %>
+          <i class="demo-icon icon-fast-fw-outline" aria-hidden="true"></i>
+          Run in background
+        <% end %>
+        <%= link_to 'Last run', run_path(@bot.last_run) %> generated <%= pluralize @bot.last_run.pages.count, 'page' %>
+        <%= link_to 'See Bot Runs', runs_path(RunsDatatable.param_set('bot.id', @bot.id)), class: 'btn btn-link text-center' %>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class='row'>
+  <div class='col-md-9'>
+    <div data-test='steps'>
+      <div class='float-left'>
+        <%= button_tag_open_modal new_bot_step_path(@bot) do %>
+          <i class="demo-icon icon-plus" aria-hidden="true"></i>
+          Add new step to navigate to a page
+        <% end %>
+      </div>
+      <%= table_view @bot.steps, *Step::FIELDS do |step| %>
+        <%= button_tag_open_modal edit_step_path(step) %>
+      <% end %>
+    </div>
+  </div>
+  <div class='col-md-3'>
+    <div class='card'>
+      <div class='card-body'>
+        <% if @bot.last_page.present? %>
+          <h5 class="card-title">
+            PageService
+            <%= link_to 'Last Page', page_path(@bot.last_page) %>
+          </h5>
+          <%= @bot.last_page.content.truncate 250 %>
+        <% else %>
+          <%= @bot.last_run.error_log %>
         <% end %>
       </div>
     </div>
   </div>
 </div>
-<div data-test='steps'>
-  <hr>
-  <div class='float-left'>
-    <%= button_tag_open_modal new_bot_step_path(@bot) do %>
-      <i class="demo-icon icon-plus" aria-hidden="true"></i>
-      Add new step
-    <% end %>
+<hr>
+<div class='row'>
+  <div class='col-md-9'>
+    <div data-test='inspects'>
+      <div class='float-left'>
+        <%= button_tag_open_modal new_bot_inspect_path(@bot) do %>
+          <i class="demo-icon icon-plus" aria-hidden="true"></i>
+          Add new inspect
+        <% end %>
+      </div>
+      <%= table_view @bot.inspects, *Inspect::FIELDS do |inspect| %>
+        <%= button_tag_open_modal edit_inspect_path(inspect) %>
+      <% end %>
+    </div>
   </div>
-  <%= @steps_datatable.render_html search_bot_steps_path(@bot, format: :json) %>
-</div>
-<div data-test='inspects'>
-  <hr>
-  <div class='float-left'>
-    <%= button_tag_open_modal new_bot_inspect_path(@bot) do %>
-      <i class="demo-icon icon-plus" aria-hidden="true"></i>
-      Add new inspect
-    <% end %>
+  <div class='col-md-3'>
+    <div class='card'>
+      <div class='card-body'>
+        <% if @bot.last_page.present? %>
+          <h5 class="card-title">InspectService <%= link_to 'Last Page Data', page_path(@bot.last_page) %></h5>
+          <%=
+            content = "<dl>".html_safe
+            @bot.last_page.data.each do |k,v|
+              content << "<dt>".html_safe
+              content << k
+              content << "</dt><dd>".html_safe
+              content << v
+              content << "</dd>".html_safe
+            end
+            content << "</dl>".html_safe
+            content
+          %>
+        <% end %>
+      </div>
+    </div>
   </div>
-  <%= @inspects_datatable.render_html search_bot_inspects_path(@bot, format: :json) %>
 </div>

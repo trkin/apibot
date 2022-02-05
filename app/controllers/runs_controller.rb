@@ -41,14 +41,26 @@ class RunsController < ApplicationUserController
     bot = current_user.company.bots.find(params[:bot_id])
     @run = bot.runs.create! status: Run::IN_QUEUE
     if params[:run_now]
-      RunJob.perform_now @run
+      result = RunJob.perform_now @run
+      message = helpers.t_notice('successfully_created', Run)
     else
+      message = 'Successfully added to background jobs'
       job = RunJob.perform_later @run
       @run.job_id = job.job_id
       @run.save!
     end
 
-    redirect_to run_path(@run), notice: helpers.t_notice('successfully_created', Run)
+    if result.success?
+      flash[:notice] = message
+    else
+      flash[:alert] = result.message
+    end
+
+    if params[:redirect_to].present?
+      redirect_to params[:redirect_to]
+    else
+      redirect_to run_path(@run)
+    end
   end
 
   def cancel

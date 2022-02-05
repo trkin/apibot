@@ -5,4 +5,6 @@ DEFAULTS: &DEFAULTS
 
 my_bot:
   <<: *DEFAULTS
+  # I tried to use sample path but Capybara.current_session is not available
+  # start_url: <%= 'http://127.0.0.1:#{Capybara.current_session.server.port}#{ActiveSupport::TestCase.new.add_host Rails.application.routes.url_helpers.sample_page_path}'%>
   start_url: https://blog.trk.in.rs

@@ -1,22 +1,45 @@
 <div id='remote-form' data-controller='activate'>
   <%= bootstrap_form_with model: @step, url: @step.new_record? ? bot_steps_path(@step.bot) : step_path(@step) do |f| %>
-    <% unless @step.new_record? %>
-      <%= f.number_field :position %>
-    <% end %>
-    <%= f.select :action, StepService::ALL_ACTIONS, {}, 'data-action': 'activate#toggleForValueIncludes', 'data-activate-selector': '[data-activate-type]' %>
-    <% StepService::ALL_ACTIONS.each do |action| %>
-      <%= content_tag :fieldset, class: "d-none-display-block #{'active' if f.object.action == action.to_s}", disabled: f.object.action != action.to_s, 'data-activate-type': action do %>
-        <%= f.select :selector_type, StepService::AVAILABLE_SELECTOR_TYPES_FOR_ACTION[action], {}, 'data-action': 'activate#toggleForValueIncludes', 'data-activate-selector': '[data-activate-subtarget]' %>
-      <% end %>
-    <% end %>
-    <%= f.text_field :locator %>
+    <div class='row'>
+      <div class='col-md-6'>
+        <% unless @step.new_record? %>
+          <%= f.number_field :position %>
+        <% end %>
+        <%= f.select :action, PageService::ALL_ACTIONS, {}, 'data-action': 'activate#toggleForValueIncludes', 'data-activate-selector': '[data-activate-type]' %>
+        <% PageService::ALL_ACTIONS.each do |action| %>
+          <%= content_tag :fieldset, class: "d-none-display-block #{'active' if f.object.action == action.to_s}", disabled: f.object.action != action.to_s, 'data-activate-type': action do %>
+            <%= f.select :selector_type, PageService::AVAILABLE_SELECTOR_TYPES_FOR_ACTION[action], {}, 'data-action': 'activate#toggleForValueIncludes', 'data-activate-selector': '[data-activate-subtarget]' %>
+          <% end %>
+        <% end %>
+        <%= f.text_field :locator %>
+      </div>
+      <div class='col-md-6'>
+        <% if @step.bot.last_page.present? %>
+          <%= link_to 'Last Page', page_path(@step.bot.last_page) %>
+          <%= text_area_tag :preview, @step.bot.last_page&.content, rows: 10, class: 'w-100' %>
+        <% else %>
+          <code>
+            <%= @step.bot.last_run.error_log %>
+          </code>
+        <% end %>
+      </div>
+    </div>
     <div style='max-width: 500px'>
-      <% StepService::SELECTOR_TYPE_AND_FILTERS.each do |selector_type, filters| %>
+      <% PageService::SELECTOR_TYPE_AND_FILTERS.each do |selector_type, filters| %>
         <%= content_tag :fieldset, class: "d-none-display #{'active' if f.object.selector_type == selector_type.to_s}", 'data-activate-subtarget': selector_type do %>
           <% if selector_type == :css %>
             <small><b>Locator</b> for <b>Selector type</b> <code>css</code> is a CSS selector.<br>Use right click -> Inspect or <a href='https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb'>chrome extension</a> (green and yellow are selected)</small>
           <% elsif selector_type == :xpath %>
             <small><b>Locator</b> for <b>Selector type</b> <code>xpath</code> XPath expression.<br>Use right click -> Inspect</small>
+          <% elsif selector_type == :data_store %>
+            <small><b>Locator</b> for <b>Selector type</b> <code>data_store</code> is a path with interpolation and Start URL is path to json for example <code>public/a.json</code>.
+              Example data_store is
+              {{url}}
+              http://mydomain.com/{{link}}
+            You can save json in ruby
+              <code>
+                File.open('public/a.json', 'w') { |f| f.write(a.to_json) }
+              </code>
           <% else %>
             <small><b>Locator</b> matches link/button text, id, name, value, title, label (do not use CSS <code>#</code> or <code>.</code>)<br>If you need to target using CSS than choose <code>css</code> or <code>xpath</code></small>
           <% end %>

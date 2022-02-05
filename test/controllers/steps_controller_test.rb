@@ -12,14 +12,8 @@ class StepsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'td', @step.action
   end
 
-  test 'should search' do
-    post search_bot_steps_path(@step.bot), params: { search: { value: @step.action } }
-    assert_match @step.action, response_json[:data].join
-    post search_bot_steps_path, params: { search: { value: 'blabla' } }
-    refute_match @step.action, response_json[:data].join
-  end
-
   test 'should create step' do
+    stub_bot_start_url
     assert_difference('Step.count') do
       post bot_steps_path(@step.bot), params: { step: { action: @step.action, locator: @step.locator } }
     end
@@ -28,6 +22,7 @@ class StepsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should update step' do
+    stub_bot_start_url
     patch step_url(@step), params: { step: { action: @step.action, locator: @step.locator } }
     assert_js_redirected_to bot_path(@step.bot)
   end

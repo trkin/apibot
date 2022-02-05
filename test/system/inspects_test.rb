@@ -9,14 +9,6 @@ class InspectsTest < ApplicationSystemTestCase
   test 'index and search' do
     visit bot_path(@inspect.bot)
     assert_selector 'td', text: @inspect.name
-    within '[data-test=inspects]' do
-      fill_in 'Search', with: @inspect.name
-    end
-    assert_selector 'td', text: @inspect.name
-    within '[data-test=inspects]' do
-      fill_in 'Search', with: 'blabla'
-    end
-    refute_selector 'td', text: @inspect.name
   end
 
   test 'creating a Inspect' do

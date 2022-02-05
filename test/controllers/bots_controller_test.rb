@@ -20,11 +20,14 @@ class BotsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should create bot' do
+    stub_bot_start_url
     assert_difference('Bot.count') do
-      post bots_path, params: { bot: { engine: @bot.engine, name: @bot.name, start_url: @bot.start_url } }
+      post bots_path, params: { bot: { name: 'my bot', engine: @bot.engine, start_url: @bot.start_url } }
     end
 
     assert_js_redirected_to bot_path(Bot.last)
+    get bot_path(Bot.last)
+    assert_select '[data-test=bot-name]', 'my bot'
   end
 
   test 'should show bot' do
@@ -34,6 +37,7 @@ class BotsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should update bot' do
+    stub_bot_start_url
     patch bot_url(@bot), params: { bot: { company_id: @bot.company_id, name: @bot.name, start_url: @bot.start_url } }
     assert_js_redirected_to bot_path(@bot)
   end

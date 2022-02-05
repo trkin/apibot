@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   # before_action :sleep_some_time
+  before_action :strip_params, if: -> { !request.get? }
 
   def sleep_some_time
     sleep 2
@@ -16,7 +17,7 @@ class ApplicationController < ActionController::Base
   #  end
   #  def create
   #    @subscriber = current_user.company.subscribers.new
-  #    update_and_render_or_redirect_in_js @subscriber, _subscriber_params, ->(id) { subscriber_path(id) }
+  #    update_and_render_or_redirect_in_js @subscriber, _subscriber_params, ->(subscriber) { subscriber_path(subscriber) }
   #  end
   def update_and_render_or_redirect_in_js(item, item_params, redirect_path_or_proc, partial = 'form', notice = nil)
     notice ||= if item.new_record?
@@ -29,7 +30,7 @@ class ApplicationController < ActionController::Base
     if item.errors.blank? && item.save
       flash[:notice] = flash.now[:notice] = notice
       redirect_path = if redirect_path_or_proc.class == Proc
-                        redirect_path_or_proc.call item.id
+                        redirect_path_or_proc.call item
                       else
                         redirect_path_or_proc
                       end
@@ -51,4 +52,16 @@ class ApplicationController < ActionController::Base
     end
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/PerceivedComplexity
+
+  def strip_params
+    params
+      .values
+      .select {|v| [ActionController::Parameters, ActiveSupport::HashWithIndifferentAccess].include? v.class }
+      .each do |item_parameters|
+        item_parameters.each do |k,v|
+          next unless v.class == String
+          item_parameters[k] = v.split.join(' ')
+        end
+    end
+  end
 end

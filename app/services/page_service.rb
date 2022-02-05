@@ -1,8 +1,11 @@
 # create page for each find_all
-class StepService
+class PageService
   ONE_TIME_ACTIONS = [
     FIND_AND_CLICK = :find_and_click,
     FILL_IN = :fill_in,
+    ACTION_MOVE_TO_AND_CLICK = :action_move_to_and_click,
+    ACTION_SLEEP = :action_sleep,
+    ACTION_PAUSE = :action_pause,
   ].freeze
   LOOPED_ACTIONS = [
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR = :visit_page_find_link_and_visit_link_url_until_link_disappear,
@@ -31,11 +34,16 @@ class StepService
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR => [:css, :xpath, :link],
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM => [:css, :xpath, :link],
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM => [:css, :xpath],
-    VISIT_LINKS_FROM_JSON_ARRAY => [:data_store]
+    VISIT_LINKS_FROM_JSON_ARRAY => [:data_store],
+    ACTION_MOVE_TO_AND_CLICK => [:css],
+    ACTION_SLEEP => [:duration],
+    ACTION_PAUSE => [],
   }
-  unless AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys == ALL_ACTIONS
+  unless AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys.sort == ALL_ACTIONS.sort
     raise "please define all available selector type for #{ALL_ACTIONS - AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys}"
   end
+
+  ACTIONS_THAT_DOES_NOT_NEED_LOCATOR = [ACTION_PAUSE]
 
   def initialize(run)
     @run = run
@@ -95,10 +103,17 @@ class StepService
           logger "@session.visit step_index=#{step_index} next_url = #{next_url}"
           @session.visit next_url
           limit_page_index += 1
+          # here we break looped action
           break unless @session.has_selector?(step.selector_type.to_sym, step.locator)
           next_link = @session.first(step.selector_type.to_sym, step.locator)
-          raise ArgumentError, "#{next_link.inspect} does not have href" unless next_link['href'].present?
-          next_url = full_path(@session.current_url, next_link['href'])
+          next_link_href = next_link['href'].to_s.split('#').first
+          if next_link_href == @session.current_url
+            logger "break since next_link_href points to the same url #{next_link_href}"
+            # TODO add test for this same_url# link
+            break
+          end
+          raise ArgumentError, "#{next_link.inspect} does not have href" unless next_link_href.present?
+          next_url = full_path(@session.current_url, next_link_href)
           logger "--------next_url = #{next_url}"
           proccess_looped_actions_and_yield_url(next_url, completed_step_index: step_index) do |url|
             logger "VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR yield #{url}"
@@ -123,17 +138,22 @@ class StepService
       when FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM
         @session.visit url
         elements = @session.all step.selector_type.to_sym, step.locator
-        elements.each do |element|
-          # for mechanize element.native.class is Nokogiri::XML::Element so we
-          # for selenium element.native.class is Selenium::WebDriver::Element
-          content = if @run.bot.engine == 'mechanize'
-                      element.native.to_html
-                    else
-                      element.native['outerHTML']
-                    end
-          @run.pages.create! url: @session.current_url, content: content
+        if elements.blank?
+          logger "Can not find elements #{step.locator}"
+        else
+          elements.each do |element|
+            # for mechanize element.native.class is Nokogiri::XML::Element so we
+            # for selenium element.native.class is Selenium::WebDriver::Element
+            content = if @run.bot.engine == 'mechanize'
+                        element.native.to_html
+                      else
+                        element.native['outerHTML']
+                      end
+            @run.pages.create! url: @session.current_url, content: content
+          end
         end
       when VISIT_LINKS_FROM_JSON_ARRAY
+        # todo last link one time actions are not triggered
         json_array.each do |json_array_item|
           result = TemplateRenderService.new(step.locator, json_array_item).render
           if result.success?
@@ -157,9 +177,21 @@ class StepService
     @run.bot.steps.where(action: ONE_TIME_ACTIONS).each do |step|
       case step.action.to_sym
       when FILL_IN
-        @session.fill_in step.locator, with: step.filters[:with]
+        @session.fill_in step.locator, with: step.filters['with']
       when FIND_AND_CLICK
         @session.first(step.selector_type.to_sym, step.locator).click
+      when ACTION_MOVE_TO_AND_CLICK
+        element = @session.first(step.selector_type.to_sym, step.locator)
+        raise ArgumentError, "Can not find #{ste.locator}" if element.blank?
+        if @run.bot.engine == 'mechanize'
+          logger 'ignoring ACTION_MOVE_TO_AND_CLICK when using mechanize'
+        else
+          @session.driver.browser.action.move_to(element.native,30,30).click_and_hold.release.perform
+        end
+      when ACTION_SLEEP
+        sleep step.locator.to_i
+      when ACTION_PAUSE
+        pause
       else
         raise "unknown_step_action=#{step.action}"
       end

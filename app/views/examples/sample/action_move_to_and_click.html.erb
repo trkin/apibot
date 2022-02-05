@@ -1,0 +1,58 @@
+<div id='log'>
+  Log:
+</div>
+<div style='background: silver; height: 200px' id='click-holder'>
+  Click anywhere inside this element
+</div>
+
+<iframe width='100%' srcdoc="
+  <html>
+    <style>
+      .box {
+        padding: 10px;
+        margin-left: -10px;
+        margin-top: -10px;
+        background-color: red;
+        position: absolute;
+      }
+    </style>
+    <body>
+     inside iframe
+    </body>
+    <script>
+      addEventListener('click', createBox);
+
+    function createBox(event) {
+      var box = document.createElement('div');
+      box.className = 'box';
+      box.style.left = event.pageX + 'px';
+      box.style.top = event.pageY + 'px';
+      document.body.appendChild(box);
+      console.log(`click x=${event.pageX} y=${event.pageY}`);
+    }
+    </script>
+  </html>
+"></iframe>
+
+<style>
+.box {
+  padding: 10px;
+  margin-left: -10px;
+  margin-top: -10px;
+  background-color: blue;
+  position: absolute;
+}
+</style>
+<script>
+  document.getElementById('click-holder').addEventListener('click', createBox);
+
+function createBox(event) {
+  var box = document.createElement('div');
+  box.className = 'box';
+  box.style.left = event.pageX + 'px';
+  box.style.top = event.pageY + 'px';
+  document.body.appendChild(box);
+  var elementRect = this.getBoundingClientRect();
+  document.getElementById('log').innerHTML = `Log: click body coordinates x=${event.pageX} y=${event.pageY}, inside element x=${event.pageX - elementRect.x} y=${event.pageY - elementRect.y} `
+}
+</script>

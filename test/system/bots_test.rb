@@ -16,6 +16,7 @@ class BotsTest < ApplicationSystemTestCase
   end
 
   test 'creating a Bot' do
+    stub_bot_start_url
     visit bots_url
     click_on 'Add new bot'
 
@@ -23,10 +24,13 @@ class BotsTest < ApplicationSystemTestCase
     fill_in 'Start url', with: @bot.start_url
     click_on 'Create Bot'
 
-    assert_notice 'Bot successfully created'
+    # wait until browser fetches the page
+    sleep 1
+    assert_notice 'OK'
   end
 
   test 'updating a Bot' do
+    stub_bot_start_url
     visit bots_url
     click_on @bot.id.to_s
     click_on 'Edit', match: :first
@@ -34,7 +38,7 @@ class BotsTest < ApplicationSystemTestCase
     fill_in 'Name', with: 'blabla'
     click_on 'Update Bot'
 
-    assert_notice 'Bot successfully updated'
+    assert_notice 'OK'
     assert_selector 'dd', text: 'blabla'
   end
 

@@ -12,13 +12,6 @@ class InspectsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'td', @inspect.name
   end
 
-  test 'should search' do
-    post search_bot_inspects_path(@inspect.bot), params: { search: { value: @inspect.name } }
-    assert_match @inspect.name, response_json[:data].join
-    post search_bot_inspects_path(@inspect.bot), params: { search: { value: 'blabla' } }
-    refute_match @inspect.name, response_json[:data].join
-  end
-
   test 'should create inspect' do
     assert_difference('Inspect.count') do
       post bot_inspects_path(@inspect.bot), params: { inspect: { name: @inspect.name, target: @inspect.target } }

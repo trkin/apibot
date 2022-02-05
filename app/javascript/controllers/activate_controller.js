@@ -28,8 +28,8 @@ export default class extends Controller {
   // strings joines by comma ,
   // This works for nested fieldset, and controller can be initialied on parent
   //
-  //  <%= f.select :action, StepService::ONE_TIME_ACTIONS + StepService::LOOPED_ACTIONS, {}, 'data-controller': 'activate', 'data-action': 'activate#toggleForValueIncludes', 'data-activate-selector': '[data-activate-target]' %>
-  //  <%= content_tag :fieldset, class: "d-none-display #{'active' if StepService::ONE_TIME_ACTIONS.include? f.object.action}", disabled: !StepService::ONE_TIME_ACTIONS.include?(f.object.action), 'data-activate-target': StepService::ONE_TIME_ACTIONS.join(',') do %>
+  //  <%= f.select :action, PageService::ONE_TIME_ACTIONS + PageService::LOOPED_ACTIONS, {}, 'data-controller': 'activate', 'data-action': 'activate#toggleForValueIncludes', 'data-activate-selector': '[data-activate-target]' %>
+  //  <%= content_tag :fieldset, class: "d-none-display #{'active' if PageService::ONE_TIME_ACTIONS.include? f.object.action}", disabled: !PageService::ONE_TIME_ACTIONS.include?(f.object.action), 'data-activate-target': PageService::ONE_TIME_ACTIONS.join(',') do %>
   toggleForValueIncludes(event) {
     let selector = event.currentTarget.getAttribute('data-activate-selector')
     let elements = document.querySelectorAll(selector)

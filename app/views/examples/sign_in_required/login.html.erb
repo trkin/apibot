@@ -1,0 +1,11 @@
+<%
+    breadcrumb 'Sign in required': sign_in_required_path, 'Login': nil
+%>
+<div class='card login--max-width p-3'>
+  <div clas='card-body'>
+    <%= bootstrap_form_with url: sign_in_required_submit_login_path do |f| %>
+      <%= f.text_field :username, required: true, placeholder: 'Please type your username' %>
+      <%= f.submit 'Login' %>
+    <% end %>
+  </div>
+</div>

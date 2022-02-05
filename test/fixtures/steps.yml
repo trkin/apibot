@@ -1,6 +1,6 @@
 DEFAULTS: &DEFAULTS
   bot: my_bot
-  action: <%= StepService::FIND_AND_CLICK %>
+  action: <%= PageService::FIND_AND_CLICK %>
   selector_type: css
   locator: $LABEL locator
   filters: { text: 'Link' }

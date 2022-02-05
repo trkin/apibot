@@ -30,13 +30,13 @@
             Inspect all <%= pluralize @run.pages.count, 'page' %>
           <% end %>
           <hr>
-          <%= button_to runs_path(bot_id: @run.bot.id), class: 'btn btn-block btn-primary' do %>
+          <%= button_to runs_path(bot_id: @run.bot.id, run_now: true), class: 'btn btn-block btn-info mb-2' do %>
             <i class="demo-icon icon-play-outline" aria-hidden="true"></i>
-            Rerun in background
-          <% end %>
-          <%= button_to runs_path(bot_id: @run.bot.id, run_now: true), class: 'btn btn-block btn-info mt-2' do %>
-            <i class="demo-icon icon-fast-fw-outline" aria-hidden="true"></i>
             Rerun now
+          <% end %>
+          <%= button_to runs_path(bot_id: @run.bot.id), class: 'btn btn-block btn-primary' do %>
+            <i class="demo-icon icon-fast-fw-outline" aria-hidden="true"></i>
+            Rerun in background
           <% end %>
         <% end %>
       </div>

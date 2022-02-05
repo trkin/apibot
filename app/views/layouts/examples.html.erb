@@ -16,9 +16,10 @@
   <body class='body__sticky-footer--wrapper'>
     <nav aria-label="breadcrumb" class='d-flex'>
       <ol class="flex-grow-1 breadcrumb breadcrumb--no-margin-bottom">
-        <li>
+        <li class='breadcrumb-item'>
           <%= link_to root_path do %>
             <%= image_tag 'logo.svg', class: 'breadcrumb__image--max-width', title: t('home') %>
+            Home
           <% end %>
         </li>
         <li class='breadcrumb-item'>
@@ -40,7 +41,7 @@
         <% end %>
       </ol>
     </nav>
-    <div class='container'>
+    <div class='container mt-4'>
       <%= yield %>
     </div>
   </body>

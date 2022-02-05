@@ -3,6 +3,7 @@ class BotsDatatable < TrkDatatables::ActiveRecord
     {
       'bots.id': {},
       'bots.start_url': {},
+      'bots.engine': {},
       'bots.name': {},
     }
   end
@@ -18,6 +19,7 @@ class BotsDatatable < TrkDatatables::ActiveRecord
       [
         @view.link_to(bot.id, bot),
         bot.start_url,
+        bot.engine,
         bot.name,
       ]
     end

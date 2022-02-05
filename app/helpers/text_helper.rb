@@ -148,5 +148,33 @@ module TextHelper
       .html_safe
   end
 
+  # <%= table_view @bot.steps, *Step::FIELDS do |step| %>
+  #   <%= button_tag_open_modal edit_step_path(step) %>
+  # <% end %>
+  def table_view(items, *cols, &block)
+    output = "<table class='table'><thead><tr>"
+    cols.each do |col|
+      output += "<th scope='col'>#{col}</th>"
+    end
+    if block_given?
+      output += "<th scope='col'>Actions</th>"
+    end
+    output += "</tr><tbody>"
+    items.each do |item|
+      output += "<tr>"
+      cols.each do |col|
+        output += "<td>#{item.send col}</td>"
+      end
+      if block_given?
+        output += content_tag 'td' do
+          yield item
+        end
+      end
+      output += "</tr>"
+    end
+    output += "</tbody></table>"
+    output.html_safe
+  end
+
   # For enums you can use User.human_enum_name :status, user.status
 end
