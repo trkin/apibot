@@ -2,6 +2,9 @@ require 'application_system_test_case'
 
 class SignUpsTest < ApplicationSystemTestCase
   test 'sign up' do
+    company = Company.last
+    company.enable_sign_up = true
+    company.save!
     visit root_path
     fill_in SignUpCompanyForm.human_attribute_name(:company), with: 'My company'
     fill_in SignUpCompanyForm.human_attribute_name(:name), with: 'My name'

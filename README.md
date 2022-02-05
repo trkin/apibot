@@ -7,6 +7,16 @@ needs.
 
 Heroku, Docker
 
+```
+heroku buildpacks
+heroku buildpacks:set heroku/ruby # https://github.com/heroku/heroku-buildpack-ruby
+heroku buildpacks:add --index 1 heroku/nodejs # https://github.com/heroku/heroku-buildpack-nodejs
+heroku buildpacks:add heroku/google-chrome # https://github.com/heroku/heroku-buildpack-google-chrome
+
+# For https://stackoverflow.com/a/57671870/287166 Webdrivers::BrowserNotFound (Failed to find Chrome binary.):
+heroku config:set WD_CHROME_PATH=/app/.apt/usr/bin/google-chrome
+```
+
 # Basic usage
 
 When you start the app you can register first `User`. It will be a superadmin
@@ -26,23 +36,6 @@ elements, fill inputs and submit forms.
 Main purpose of a bot when we `Run` it, is to get to the desired `Page` with
 data we need (using `PageService`) and to perform inspection (using
 `InspectService`).
-
-# Step Service
-
-For example if you want to grab header text from url  than you do not need any
-steps, initial `Page` will containt `...<h1>My Header</h1>...` so you just need
-to inspect that html.
-
-TODO: add examples
-
-Another example is that you need to navigate using `find_and_click` and `fill_in`
-steps, for example you need to log in.
-
-Another example is that
-in which case result is json object. Another
-way is that steps uses some of the Looped actions that generate array
-`<tr><td>Item1</td><td>1</td></tr>` and `<tr><td>Item2</td><td>2</td></tr>`. In
-this case result is array of object that represents data on each page fragment.
 
 Saved html is processed by `Inspect` to return data in clear formated format
 (without html tags and spaces).
@@ -74,6 +67,9 @@ or an array of objects with string values
   ]
 }
 ```
+
+Some examples you can run with a click on your api bot locally or on Heroku
+http://trk-bot.herokuapp.com/examples
 
 # Keywords
 

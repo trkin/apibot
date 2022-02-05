@@ -4,7 +4,7 @@ class SignUpCompanyForm
   FIELDS = %i[company name email password enable_sign_up].freeze
   attr_accessor(*FIELDS)
   attr_accessor :user
-  validates(*FIELDS, presence: true)
+  validates(*(FIELDS - [:enable_sign_up]), presence: true)
 
   def save
     return false unless valid?

@@ -22,7 +22,7 @@ class BotsControllerTest < ActionDispatch::IntegrationTest
   test 'should create bot' do
     stub_bot_start_url
     assert_difference('Bot.count') do
-      post bots_path, params: { bot: { name: 'my bot', engine: @bot.engine, start_url: @bot.start_url } }
+      post bots_path, params: { bot: { name: 'my bot', engine: @bot.engine, start_url: @bot.start_url } }, xhr: true
     end
 
     assert_js_redirected_to bot_path(Bot.last)

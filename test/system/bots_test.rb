@@ -24,8 +24,7 @@ class BotsTest < ApplicationSystemTestCase
     fill_in 'Start url', with: @bot.start_url
     click_on 'Create Bot'
 
-    # wait until browser fetches the page
-    sleep 1
+    sleep 1 # wait until browser fetches the page
     assert_notice 'OK'
   end
 
@@ -38,6 +37,7 @@ class BotsTest < ApplicationSystemTestCase
     fill_in 'Name', with: 'blabla'
     click_on 'Update Bot'
 
+    sleep 1 # wait until browser fetches the page
     assert_notice 'OK'
     assert_selector 'dd', text: 'blabla'
   end

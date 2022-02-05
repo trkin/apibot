@@ -2,10 +2,11 @@ DEFAULTS: &DEFAULTS
   bot: my_bot
   action: <%= PageService::FIND_AND_CLICK %>
   selector_type: css
-  locator: $LABEL locator
+  locator: .$LABEL
   filters: { text: 'Link' }
 my_step:
   <<: *DEFAULTS
   position: 0
 
-# step is defined inside each test where it is tested
+# step is defined inside each test where it is tested, but default is using
+# stub_bot_start_url page
