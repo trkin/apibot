@@ -1,6 +1,5 @@
 DEFAULTS: &DEFAULTS
   company: my_company
-  engine: <%= Bot.engines[:mechanize] %>
   name: $LABEL name
 
 my_bot:

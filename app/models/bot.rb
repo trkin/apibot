@@ -1,5 +1,5 @@
 class Bot < ApplicationRecord
-  FIELDS = %i[start_url name engine config].freeze
+  FIELDS = %i[start_url name headless config].freeze
   CONFIG_BOOLEAN_KEYS = %i[create_screenshots include_page_url_in_data include_apibot_url_in_data]
   serialize :config, Hash
 
@@ -10,12 +10,6 @@ class Bot < ApplicationRecord
   has_many :steps, -> { order(position: :asc) }, dependent: :destroy
   accepts_nested_attributes_for :steps
   has_many :runs, dependent: :destroy
-
-  enum engine: %i[
-    selenium_chrome
-    selenium_chrome_headless
-    mechanize
-  ].each_with_object({}) { |k, o| o[k] = k.to_s }
 
   validates :start_url, presence: true, format: URI::regexp(%w[http https])
 

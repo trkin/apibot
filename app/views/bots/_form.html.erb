@@ -2,7 +2,6 @@
   <%= bootstrap_form_with model: @bot, layout: :horizontal do |f| %>
     <%= f.text_field :start_url, placeholder: 'https://en.wikipedia.org/wiki/Main_Page' %>
     <%= f.text_field :name, placeholder: 'Wiki: On this day' %>
-    <%= f.select :engine, Bot.engines, help: 'mechanize does not supports screenshots' %>
     <% Bot::CONFIG_BOOLEAN_KEYS.each do |key| %>
       <%= f.check_box key, name: "#{f.object.class.name.underscore}[config][#{key}]", checked: f.object.config&.dig(key) == '1', label: key.to_s.titleize %>
     <% end %>

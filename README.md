@@ -27,11 +27,10 @@ create another `Company` and add other users to it.
 Scrapping is performed in two steps, first is to download a html page using a
 `Bot` and second is to parse downloaded data using `Inspect`.
 
-`Bot` is defined with starting url and engine. If the site does not require
-javascript than you can choose `mechanize` engine, otherwise you can choose
-`selenium_chrome` or `headless_selenium_chrome`. If target data is not on the
-starting url than you can perform various `Step`s to get to it: click on page
-elements, fill inputs and submit forms.
+`Bot` is defined with starting url. If the site does not require
+javascript than you can choose `selenium_chrome` or `headless_selenium_chrome`.
+If target data is not on the starting url than you can perform various `Step`s
+to get to it: click on page elements, fill inputs and submit forms.
 
 Main purpose of a bot when we `Run` it, is to get to the desired `Page` with
 data we need (using `PageService`) and to perform inspection (using

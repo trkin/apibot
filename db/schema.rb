@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_04_093644) do
+ActiveRecord::Schema.define(version: 2022_02_05_144942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,12 +27,12 @@ ActiveRecord::Schema.define(version: 2022_02_04_093644) do
 
   create_table "bots", force: :cascade do |t|
     t.bigint "company_id", null: false
-    t.string "engine", null: false
     t.string "start_url", null: false
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "config"
+    t.boolean "headless", default: false, null: false
     t.index ["company_id"], name: "index_bots_on_company_id"
   end
 

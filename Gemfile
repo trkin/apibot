@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.5'
+ruby '3.0.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
@@ -76,13 +76,11 @@ gem 'trk_datatables'
 # ordering
 gem 'acts_as_list'
 
-# chrome and mechanize
-gem 'capybara', '>= 2.15'
+# chrome
+gem 'capybara', '~> 3.36.0'
 gem 'selenium-webdriver'
 # Easy installation and use of web drivers to run system tests with browsers
 gem 'webdrivers'
-# access remote servers
-gem 'capybara-mechanize'
 
 # csv
 gem 'csv'
@@ -93,3 +91,6 @@ gem 'bootstrap4-kaminari-views'
 
 # visit url based on json response interpolation
 gem 'mustache'
+
+# https://github.com/rails/rails/issues/38723
+gem 'sprockets', '~> 3'

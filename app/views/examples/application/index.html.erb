@@ -5,7 +5,7 @@
       <div class='card-title'>Get the page h1 element</div>
       <p class='card-test'>
         <%
-          bot_attributes = { name: 'Get Header', start_url: sample_page_url, engine: 'selenium_chrome', inspects_attributes: { '0': { name: 'header', target: 'h1'} } }
+          bot_attributes = { name: 'Get Header', start_url: sample_page_url, inspects_attributes: { '0': { name: 'header', target: 'h1'} } }
         %>
         <pre>
 <%= JSON.pretty_generate bot_attributes %>
@@ -20,7 +20,7 @@
       <div class='card-title'>Click on page or iframe</div>
       <p class='card-test'>
         <%
-            bot_attributes = { name: 'Move to and click', start_url: action_move_to_and_click_url, engine: 'selenium_chrome', steps_attributes: { '0': { action: PageService::ACTION_MOVE_TO_AND_CLICK, selector_type: 'css', locator: '#click-holder' }, '1': { action: PageService::ACTION_MOVE_TO_AND_CLICK, selector_type: :css, locator: 'iframe' } } }
+            bot_attributes = { name: 'Move to and click', start_url: action_move_to_and_click_url, steps_attributes: { '0': { action: PageService::ACTION_MOVE_TO_AND_CLICK, selector_type: 'css', locator: '#click-holder' }, '1': { action: PageService::ACTION_MOVE_TO_AND_CLICK, selector_type: :css, locator: 'iframe' } } }
         %>
         <pre>
 <%= JSON.pretty_generate bot_attributes %>
@@ -35,7 +35,7 @@
       <div class='card-title'>Get all book names</div>
       <p class='card-test'>
         <%
-            bot_attributes = { name: 'Book names', start_url: paginated_with_links_url, engine: 'selenium_chrome', steps_attributes: { '0': { action: PageService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'}, '1': { action: PageService::FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM, selector_type: :css, locator: '.card-body' }}, inspects_attributes: { '0': { name: 'book', target: '.card-title', regexp: '\S+(?: \S+)*' } } }
+            bot_attributes = { name: 'Book names', start_url: paginated_with_links_url, steps_attributes: { '0': { action: PageService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'}, '1': { action: PageService::FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM, selector_type: :css, locator: '.card-body' }}, inspects_attributes: { '0': { name: 'book', target: '.card-title', regexp: '\S+(?: \S+)*' } } }
         %>
         <pre>
 <%= JSON.pretty_generate bot_attributes %>
@@ -53,7 +53,7 @@
       <div class='card-title'>Log in</div>
       <p class='card-test'>
         <%
-            bot_attributes = { name: 'Log in', start_url: sign_in_required_url, engine: 'selenium_chrome', steps_attributes: { '0': { action: PageService::FILL_IN, selector_type: 'fillable_field', locator: 'Username', filters: {"with"=>"myusername"} }, '1': {action: PageService::FIND_AND_CLICK, selector_type: 'link_or_button', locator: 'Login'}}, inspects_attributes: { '0': { name: 'my-account', target: '#my-account'} } }
+            bot_attributes = { name: 'Log in', start_url: sign_in_required_url, steps_attributes: { '0': { action: PageService::FILL_IN, selector_type: 'fillable_field', locator: 'Username', filters: {"with"=>"myusername"} }, '1': {action: PageService::FIND_AND_CLICK, selector_type: 'link_or_button', locator: 'Login'}}, inspects_attributes: { '0': { name: 'my-account', target: '#my-account'} } }
         %>
         <pre>
 <%= JSON.pretty_generate bot_attributes %>

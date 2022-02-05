@@ -47,7 +47,7 @@ class PageService
 
   def initialize(run)
     @run = run
-    @session = Capybara::Session.new(@run.bot.engine.to_sym)
+    @session = Capybara::Session.new @run.bot.headless? ? :selenium_chrome_headless : :selenium_chrome
   end
 
   def perform
@@ -142,14 +142,7 @@ class PageService
           logger "Can not find elements #{step.locator}"
         else
           elements.each do |element|
-            # for mechanize element.native.class is Nokogiri::XML::Element so we
-            # for selenium element.native.class is Selenium::WebDriver::Element
-            content = if @run.bot.engine == 'mechanize'
-                        element.native.to_html
-                      else
-                        element.native['outerHTML']
-                      end
-            @run.pages.create! url: @session.current_url, content: content
+            @run.pages.create! url: @session.current_url, content: element.native['outerHTML']
           end
         end
       when VISIT_LINKS_FROM_JSON_ARRAY
@@ -183,11 +176,7 @@ class PageService
       when ACTION_MOVE_TO_AND_CLICK
         element = @session.first(step.selector_type.to_sym, step.locator)
         raise ArgumentError, "Can not find #{ste.locator}" if element.blank?
-        if @run.bot.engine == 'mechanize'
-          logger 'ignoring ACTION_MOVE_TO_AND_CLICK when using mechanize'
-        else
-          @session.driver.browser.action.move_to(element.native,30,30).click_and_hold.release.perform
-        end
+        @session.driver.browser.action.move_to(element.native,30,30).click_and_hold.release.perform
       when ACTION_SLEEP
         sleep step.locator.to_i
       when ACTION_PAUSE
