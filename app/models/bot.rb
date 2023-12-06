@@ -1,7 +1,6 @@
 class Bot < ApplicationRecord
   FIELDS = %i[start_url name headless config].freeze
   CONFIG_BOOLEAN_KEYS = %i[create_screenshots include_page_url_in_data include_apibot_url_in_data]
-  serialize :config, Hash
 
   belongs_to :company
 

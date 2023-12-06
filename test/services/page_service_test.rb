@@ -24,7 +24,7 @@ class StepServiceTest < ApplicationSystemTestCase
 
   test 'FIND_AND_CLICK ONE_TIME_ACTIONS' do
     bot = companies(:my_company).bots.create! start_url: add_host(paginated_with_links_path)
-    step = bot.steps.create! action: PageService::FIND_AND_CLICK, selector_type: :link, locator: books(:book_1).title
+    bot.steps.create! action: PageService::FIND_AND_CLICK, selector_type: :link, locator: books(:book_1).title
     assert_difference 'Page.count', 1 do
       result = bot.create_and_perform_run
       assert result.success?, result.message
@@ -79,7 +79,6 @@ class StepServiceTest < ApplicationSystemTestCase
   test 'it works with non asci chars in url on links' do
     bot = companies(:my_company).bots.create! start_url: add_host(non_ascii_path)
     run = bot.runs.create! status: Run::IN_PROGRESS
-    bot.steps.create! action: PageService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
     bot.steps.create! action: PageService::FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM, selector_type: :link, locator: 'шoу'
     expected_pages = 2
     assert_difference 'Page.count', expected_pages do
@@ -110,6 +109,28 @@ class StepServiceTest < ApplicationSystemTestCase
     bot.steps.create! action: PageService::VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR, selector_type: :css, locator: '[rel="next"]'
     expected_pages = 1
     assert_difference 'Page.count', expected_pages do
+      result = PageService.new(run).perform
+      assert result.success?
+    end
+  end
+
+  test "pagination using Next VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED" do
+    bot = companies(:my_company).bots.create! start_url: add_host(paginated_with_next_button_path)
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    bot.steps.create! action: PageService::VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED, selector_type: :css, locator: '[type="submit"]'
+    expected_pages = Const.examples[:number_of_books] / Const.examples[:per_page] + ((Const.examples[:number_of_books] % Const.examples[:per_page]).zero? ? 0 : 1)
+    assert_difference 'Page.count', expected_pages do
+      result = PageService.new(run).perform
+      assert result.success?
+    end
+  end
+
+  test "pagination using Next VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED and FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM" do
+    bot = companies(:my_company).bots.create! start_url: add_host(paginated_with_next_button_path)
+    run = bot.runs.create! status: Run::IN_PROGRESS
+    bot.steps.create! action: PageService::VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED, selector_type: :css, locator: '[type="submit"]'
+    bot.steps.create! action: PageService::FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM, selector_type: :css, locator: '.card-title'
+    assert_difference 'Page.count', Const.examples[:number_of_books] do
       result = PageService.new(run).perform
       assert result.success?
     end

@@ -27,6 +27,19 @@ class InspectService
       else
         result[inspect.name] = element_value
       end
+      inspect.transformations.each do |transformation|
+        next if transformation.blank?
+        case transformation
+        when "titleize"
+          result[inspect.name] = result[inspect.name].titleize
+        when "upcase"
+          result[inspect.name] = result[inspect.name].upcase
+        when "downcase"
+          result[inspect.name] = result[inspect.name].downcase
+        else
+          raise "unknown_transformation #{transformation}"
+        end
+      end
     end
     result[:include_page_url_in_data] = @page.url if @page.run.bot.config[:include_page_url_in_data] == '1'
     result[:include_apibot_url_in_data] = Rails.application.routes.url_helpers.page_url(@page) if @page.run.bot.config[:internal_show_page_url]
@@ -35,6 +48,8 @@ class InspectService
     @page.save! unless @disable_save
     Result.new 'OK', result
   rescue StandardError => e
+    # TODO: rescue only inspect errors, not all StandardError like ruby nil
+    # or at least show the line number or what is causing the error
     @page.error_log = e.message
     @page.save! unless @disable_save
     Error.new e.message

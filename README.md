@@ -118,3 +118,11 @@ rake
 # Similar tools
 
 * Kimurai https://github.com/vifreefly/kimuraframework
+
+# TODO
+
+* callback url that will send data back to some server
+* push data to google drive, send to email
+* convert to ruby script that can be run intependently so complex situation can
+  be handler manually
+* add test for recurring bots

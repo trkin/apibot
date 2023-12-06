@@ -27,6 +27,9 @@ Rails.application.routes.draw do
       get :paginated_with_errors, to: 'examples/paginated_with_errors#index'
       get 'paginated_with_errors/:id', to: 'examples/paginated_with_errors#book', as: :paginated_with_errors_book
       get :sample_error, to: 'examples/application#sample_error'
+      get :paginated_with_next_button, to: "examples/paginated_with_next_button#index"
+      get "paginated_with_next_button/:id", to: "examples/paginated_with_next_button#show"
+      post :paginated_with_next_button, to: "examples/paginated_with_next_button#submit"
     end
 
     resource :sign_up

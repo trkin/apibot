@@ -66,7 +66,8 @@ class InspectsController < ApplicationUserController
 
   def _inspect_params
     params.require(:inspect).permit(
-      *Inspect::FIELDS
+      *Inspect::FIELDS,
+      transformations: [],
     )
   end
 end

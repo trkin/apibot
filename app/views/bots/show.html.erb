@@ -38,13 +38,17 @@
   <div class='col-md-9'>
     <div data-test='steps'>
       <div class='float-left'>
+        Navigate to a desired page or use loop to download multiple pages
         <%= button_tag_open_modal new_bot_step_path(@bot) do %>
           <i class="demo-icon icon-plus" aria-hidden="true"></i>
-          Add new step to navigate to a page
+          Add new step
         <% end %>
       </div>
       <%= table_view @bot.steps, *Step::FIELDS do |step| %>
         <%= button_tag_open_modal edit_step_path(step) %>
+      <% end %>
+      <% if @bot.steps.blank? %>
+        Default page is Start URL
       <% end %>
     </div>
   </div>
@@ -55,6 +59,7 @@
           <h5 class="card-title">
             PageService
             <%= link_to 'Last Page', page_path(@bot.last_page) %>
+            <small><%= time_ago_in_words @bot.last_page.created_at %> ago</small>
           </h5>
           <%= @bot.last_page.content.truncate 250 %>
         <% else %>
@@ -69,6 +74,7 @@
   <div class='col-md-9'>
     <div data-test='inspects'>
       <div class='float-left'>
+        Once you have pages, you can extract data from it
         <%= button_tag_open_modal new_bot_inspect_path(@bot) do %>
           <i class="demo-icon icon-plus" aria-hidden="true"></i>
           Add new inspect

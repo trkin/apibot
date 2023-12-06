@@ -3,9 +3,10 @@
     <div class='row'>
       <div class='col-md-6'>
         <%= f.text_field :name %>
-        <%= f.text_field :target, help: "css selector like <code>.class</code> or <code>td:nth-child(1)</code> <a href='https://www.w3.org/TR/selectors-3/#selectors'>reference</a>".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
-        <%= f.text_field :regexp %>
-        <%= f.select :value_target, Inspect::VALUE_TARGETS %>
+        <%= f.text_field :target, help: "css selector like <code>.class</code> or <code>td:nth-child(1)</code> <a href='https://www.w3.org/TR/selectors-3/#selectors'>reference</a> <a href='https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb'>chrome extension</a> (green and yellow are selected)".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
+        <%= f.text_field :regexp, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
+        <%= f.select :value_target, Inspect::VALUE_TARGETS, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
+        <%= f.select :transformations, Inspect::TRANSFORMATIONS, {}, multiple: true, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
       </div>
       <div class='col-md-6'>
         <code>

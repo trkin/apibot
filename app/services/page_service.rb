@@ -1,5 +1,7 @@
 # create page for each find_all
 class PageService
+  # ONE_TIME_ACTIONS are run before LOOPED_ACTIONS
+  # we will create another for inside looped actions if needed
   ONE_TIME_ACTIONS = [
     FIND_AND_CLICK = :find_and_click,
     FILL_IN = :fill_in,
@@ -9,6 +11,7 @@ class PageService
   ].freeze
   LOOPED_ACTIONS = [
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR = :visit_page_find_link_and_visit_link_url_until_link_disappear,
+    VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED = :visit_page_find_next_button_and_submit_until_button_is_disabled,
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM = :find_all_links_loop_through_all_to_visit_them,
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM = :find_all_elements_and_create_pages_from_them,
     VISIT_LINKS_FROM_JSON_ARRAY = :visit_links_from_json_array,
@@ -32,6 +35,7 @@ class PageService
     FIND_AND_CLICK => ALL_SELECTOR_TYPES,
     FILL_IN => [:fillable_field],
     VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR => [:css, :xpath, :link],
+    VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED => [:css, :xpath],
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM => [:css, :xpath, :link],
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM => [:css, :xpath],
     VISIT_LINKS_FROM_JSON_ARRAY => [:data_store],
@@ -53,8 +57,8 @@ class PageService
   def perform
     @run.in_progress!
     logger "START #{@run.bot.start_url}"
+    process_one_time_actions_to_set_session_to_target_page @run.bot.start_url
     proccess_looped_actions_and_yield_url(@run.bot.start_url) do |url|
-      process_one_time_actions_to_set_session_to_target_page url
       logger "******** pages.create session.current_url=#{@session.current_url}"
       @run.pages.create! url: @session.current_url, content: @session.body
     end
@@ -85,23 +89,31 @@ class PageService
     @session.quit
   end
 
+  # this is called inside each LOOPED_ACTIONS so we can have nested loops,
+  # eg when some first step is calling again, it passes completed_step_index is 0
+  # which means that we ignore first step in next each_with_index.
+  # also we ignore if we call first time completed_step_index == -1 for non
+  # first step_index > 0 steps
+  #
+  # first_loop_action (only called once)
+  #   second_loop_action (called for each first_loop_action)
   def proccess_looped_actions_and_yield_url(url, completed_step_index: -1)
     return if cancelled?
     @run.bot.steps.where(action: LOOPED_ACTIONS).each_with_index do |step, step_index|
       next if step_index <= completed_step_index # ignore since we already completed this step
+      next if completed_step_index == -1 && step_index > 0
       case step.action.to_sym
       when VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR
-        if completed_step_index == -1 && @run.bot.steps.where(action: LOOPED_ACTIONS).size == 1
-          # do not yield first page if there are other looped actions
-          logger "FIRST_RUN proccess_looped_actions_and_yield_url yield url=#{url} completed_step_index=#{completed_step_index}"
-          yield url
-        end
         next_url = url
         # TODO move this limit to bot configuration
         limit_page_index = 0
         while !cancelled? && limit_page_index < 1000
           logger "@session.visit step_index=#{step_index} next_url = #{next_url}"
           @session.visit next_url
+          proccess_looped_actions_and_yield_url(next_url, completed_step_index: step_index) do |url|
+            logger "VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR yield #{url}"
+            yield url
+          end
           limit_page_index += 1
           # here we break looped action
           break unless @session.has_selector?(step.selector_type.to_sym, step.locator)
@@ -115,12 +127,24 @@ class PageService
           raise ArgumentError, "#{next_link.inspect} does not have href" unless next_link_href.present?
           next_url = full_path(@session.current_url, next_link_href)
           logger "--------next_url = #{next_url}"
-          proccess_looped_actions_and_yield_url(next_url, completed_step_index: step_index) do |url|
-            logger "VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR yield #{url}"
-            yield url
-          end
         end
         logger 'finished loop for VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR'
+      when VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED
+        # TODO move this limit to bot configuration
+        limit_page_index = 0
+        last_session_body = ""
+        while !cancelled? && limit_page_index < 100
+          logger "@session.submit step_index=#{step_index} limit_page_index = #{limit_page_index}"
+          proccess_looped_actions_and_yield_url(url, completed_step_index: step_index) do |url|
+            logger "VISIT_PAGE_FIND_NEXT_BUTTON_AND_SUBMIT_UNTIL_BUTTON_IS_DISABLED yield #{url}"
+            yield url
+          end
+          next_button = @session.first(step.selector_type.to_sym, step.locator)
+          break if next_button.disabled? || last_session_body == @session.body
+          last_session_body = @session.body
+          next_button.click
+          limit_page_index += 1
+        end
       when FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM
         @session.visit url
         links = @session.all step.selector_type.to_sym, step.locator
@@ -136,7 +160,6 @@ class PageService
           end
         end
       when FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM
-        @session.visit url
         elements = @session.all step.selector_type.to_sym, step.locator
         if elements.blank?
           logger "Can not find elements #{step.locator}"
