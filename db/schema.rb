@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 2023_12_06_100252) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.jsonb "config"
+    t.jsonb "config", default: {}
     t.boolean "headless", default: false, null: false
     t.index ["company_id"], name: "index_bots_on_company_id"
   end
