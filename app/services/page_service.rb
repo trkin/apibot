@@ -15,6 +15,7 @@ class PageService
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM = :find_all_links_loop_through_all_to_visit_them,
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM = :find_all_elements_and_create_pages_from_them,
     VISIT_LINKS_FROM_JSON_ARRAY = :visit_links_from_json_array,
+    ITERATE_SCRIPT_UNTILL_SAME_RESPONSE_OCCURS = :iterate_script_untill_same_response_occurs,
   ].freeze
   ALL_ACTIONS = ONE_TIME_ACTIONS + LOOPED_ACTIONS
   ALL_SELECTOR_TYPES = Capybara::Selector.all.keys
@@ -39,6 +40,7 @@ class PageService
     FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM => [:css, :xpath, :link],
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM => [:css, :xpath],
     VISIT_LINKS_FROM_JSON_ARRAY => [:data_store],
+    ITERATE_SCRIPT_UNTILL_SAME_RESPONSE_OCCURS => [:code],
     ACTION_MOVE_TO_AND_CLICK => [:css],
     ACTION_SLEEP => [:duration],
     ACTION_PAUSE => [],
@@ -73,6 +75,7 @@ class PageService
     @run.save!
     Result.new 'OK'
   rescue \
+    ArgumentError,
     Capybara::ElementNotFound, # also Capybara::ExpectationNotMet is incuded here
     Selenium::WebDriver::Error::WebDriverError, # when server breaks
     Net::HTTPNotFound, # when there is 404 page
@@ -114,17 +117,18 @@ class PageService
             logger "VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR yield #{url}"
             yield url
           end
+          @session.visit next_url unless @session.current_url == next_url
           limit_page_index += 1
           # here we break looped action
-          break unless @session.has_selector?(step.selector_type.to_sym, step.locator)
+          logger "@@@@@@@@@@ break has_selector?(#{step.selector_type.to_sym},#{step.locator}) is false" and break unless @session.has_selector?(step.selector_type.to_sym, step.locator)
           next_link = @session.first(step.selector_type.to_sym, step.locator)
           next_link_href = next_link['href'].to_s.split('#').first
           if next_link_href == @session.current_url
-            logger "break since next_link_href points to the same url #{next_link_href}"
+            logger "@@@@@@@@@ break since next_link_href points to the same url #{next_link_href}"
             # TODO add test for this same_url# link
             break
           end
-          raise ArgumentError, "#{next_link.inspect} does not have href" unless next_link_href.present?
+          raise ArgumentError, "#{next_link.inspect} does not have href. Please check #{step.selector_type} locator='#{step.locator}' in #{step_index + 1} step" unless next_link_href.present?
           next_url = full_path(@session.current_url, next_link_href)
           logger "--------next_url = #{next_url}"
         end
@@ -147,16 +151,14 @@ class PageService
         end
       when FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM
         @session.visit url
-        links = @session.all step.selector_type.to_sym, step.locator
-        if links.present?
-          cached_hrefs = links.map { |link| link['href'] }
-          cached_hrefs.each do |href|
-            one_link = full_path(@session.current_url, href)
-            # logger "one_link href=#{one_link}"
-            proccess_looped_actions_and_yield_url(one_link, completed_step_index: step_index) do |url|
-              logger "FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM yield #{url}"
-              yield url
-            end
+        on_page_links_hrefs = @session.all(step.selector_type.to_sym, step.locator).map { |link| link['href'] }
+        on_page_links_hrefs.each do |href|
+          one_link = full_path(@session.current_url, href)
+          # logger "one_link href=#{one_link}"
+          proccess_looped_actions_and_yield_url(one_link, completed_step_index: step_index) do |url|
+            logger "FIND_ALL_LINKS_LOOP_THROUGH_ALL_TO_VISIT_THEM yield #{url}"
+            @session.visit url
+            yield url
           end
         end
       when FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM
@@ -178,6 +180,10 @@ class PageService
             logger_error result.message
           end
         end
+      when ITERATE_SCRIPT_UNTILL_SAME_RESPONSE_OCCURS
+        # TODO: use eval to run arbitrary ruby code. Available methods:
+        # @session
+        # proccess_looped_actions_and_yield_url
       else
         raise "unknown_step_action=#{step.action}"
       end
@@ -237,7 +243,7 @@ class PageService
   def full_path(current_url, link)
     uri = URI current_url
     uri.merge link
-  rescue URI::InvalidURIError => e
+  rescue URI::InvalidURIError => _e
     uri.merge URI.escape(link)
   end
 

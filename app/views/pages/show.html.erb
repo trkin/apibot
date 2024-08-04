@@ -22,12 +22,25 @@
           <% end %>
         </div>
         <%= detail_view_list @page, *([:id] + Page::FIELDS - [:content]) %>
-        <%= link_to 'Content <i class="demo-icon icon-link-ext"></i>'.html_safe, content_page_path(@page), target: :_blank %>
-        <% if @page.content.size < 1000 %>
-          <code>
-            <%= @page.content %>
-          </code>
-        <% end %>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <dl>
+          <dt>
+            Preview
+            <%= link_to 'Another tab <i class="demo-icon icon-link-ext"></i>'.html_safe, content_page_path(@page), target: :_blank %>
+          </dt>
+          <dd>
+            <iframe width='100%' height="300px" srcdoc="
+              <%= @page.content.gsub '"', "'" %>
+              "></iframe>
+          </dd>
+          <dt>HTML</dt>
+          <dd>
+            <%= text_area_tag :code, @page.content, rows: 10, style: "width:100%", disabled: true %>
+          </dd>
+        </dl>
       </div>
     </div>
   </div>

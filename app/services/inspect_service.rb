@@ -50,8 +50,9 @@ class InspectService
   rescue StandardError => e
     # TODO: rescue only inspect errors, not all StandardError like ruby nil
     # or at least show the line number or what is causing the error
-    @page.error_log = e.message
+    message_and_backtrace = "#{e.message} #{e.backtrace.first}"
+    @page.error_log = message_and_backtrace
     @page.save! unless @disable_save
-    Error.new e.message
+    Error.new message_and_backtrace
   end
 end

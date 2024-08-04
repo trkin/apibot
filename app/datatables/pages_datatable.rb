@@ -4,7 +4,6 @@ class PagesDatatable < TrkDatatables::ActiveRecord
       'pages.id': { title: 'PageID' },
       'pages.url': { title: 'Page URL' },
       'pages.data': {},
-      '': {},
     }
   end
 
@@ -21,12 +20,10 @@ class PagesDatatable < TrkDatatables::ActiveRecord
   def rows(filtered)
     # you can use @view.link_to and other helpers
     filtered.map do |page|
-      actions = @view.link_to('Content <i class="demo-icon icon-link-ext"></i>'.html_safe, @view.content_page_path(page), target: :_blank)
       [
         @view.link_to(page.id, page),
-        page.url,
+        page.url.split("/").last,
         page.data.to_s,
-        actions,
       ]
     end
   end

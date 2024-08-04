@@ -9,13 +9,20 @@
         <%= f.select :transformations, Inspect::TRANSFORMATIONS, {}, multiple: true, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
       </div>
       <div class='col-md-6'>
-        <code>
-          <%= @inspect.bot.last_page.content %>
-        </code>
         <dl>
           <dt>Result</dt>
           <dd>
-            <%= text_field_tag 'preview', @inspect.bot.last_page.data[@inspect.name], class: 'w-100' %>
+            <%= text_field_tag 'preview', @inspect.bot.last_page.data[@inspect.name], class: 'w-100', disabled: true %>
+          </dd>
+          <dt>Preview</dt>
+          <dd>
+            <iframe width='100%' height="300px" srcdoc="
+              <%= @inspect.bot.last_page.content.gsub '"', "'" %>
+              "></iframe>
+          </dd>
+          <dt>HTML</dt>
+          <dd>
+            <%= text_area_tag :code, @inspect.bot.last_page.content, rows: 10, style: "width:100%", disabled: true %>
           </dd>
         </dl>
       </div>

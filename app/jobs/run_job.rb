@@ -4,11 +4,16 @@ class RunJob < ApplicationJob
   sidekiq_options retry: 0
   def perform(run)
     result = PageService.new(run).perform
+    return result unless result.success?
+
     run.pages.each do |page|
       result = InspectService.new(page).perform
-      run.failed! unless result.success?
+      unless result.success?
+        run.failed!
+        return result
+      end
     end
     # UploadRunResult.new(run).perform
-    result
+    Result.new "Successfully run PageService and InspectService for #{run.pages.count} pages"
   end
 end
