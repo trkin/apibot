@@ -3,9 +3,20 @@
     <div class='row'>
       <div class='col-md-6'>
         <%= f.text_field :name %>
-        <%= f.text_field :target, help: "css selector like <code>.class</code> or <code>td:nth-child(1)</code> <a href='https://www.w3.org/TR/selectors-3/#selectors'>reference</a> <a href='https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb'>chrome extension</a> (green and yellow are selected)".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
-        <%= f.text_field :regexp, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
-        <%= f.select :value_target, Inspect::VALUE_TARGETS, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
+        <%= f.text_field :target, help: "<a href='https://www.w3.org/TR/selectors-3/#selectors'>css</a>  selector like <code>.class</code> or <a href='https://www.w3schools.com/xml/xpath_syntax.asp'>xpath</a> like <code>//div[@id=main]</code> <a href='https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb'>chrome extension</a> (green and yellow are selected)".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
+        <small>
+          XPath examples:<br>
+          <code>//div[@class='btn'][1]</code> to select first div with class "btn<br>
+          <code>//div[contains(text(), "mystr")]</code> to get divs which contain <b>mystr</b><br>
+          <code>//li[text()='my']/preceding-sibling::li</code> to get li element before li with text "mystr"<br>
+        </small>
+        <%= f.text_field :regexp, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Regexp is used to filter target text, matches are scanned and joined  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>".html_safe %>
+        <small>
+          <code>\d+</code> to get only digits<br>
+          <code>\S+(?: \S+)*</code> to get only one non space character between<br>
+          <code>\S+@\S+</code> to get email surrounded by white space
+        </small>
+        <%= f.select :value_target, Inspect::VALUE_TARGETS, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Should we look at text or it's href attribute ?" %>
         <%= f.select :transformations, Inspect::TRANSFORMATIONS, {}, multiple: true, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
       </div>
       <div class='col-md-6'>
@@ -27,12 +38,6 @@
         </dl>
       </div>
     </div>
-    <small>
-      <b>Regexp</b> is used to filter target text, matches are scanned and joined  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>:<br>
-      <code>\d+</code> to get only digits<br>
-      <code>\S+(?: \S+)*</code> to get only one non space character between<br>
-      <code>\S+@\S+</code> to get email surrounded by white space
-    </small>
     <div class='remote-form__actions'>
       <% unless @inspect.new_record? %>
         <%= link_to inspect_path(@inspect), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@inspect.name), title: 'Delete inspect', class: 'btn btn-outline-danger' do %>

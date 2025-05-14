@@ -1,0 +1,6 @@
+DEFAULTS: &DEFAULTS
+  inspect: my_inspect
+  trace: my_trace
+
+my_inspect_trace:
+  <<: *DEFAULTS

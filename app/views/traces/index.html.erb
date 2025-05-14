@@ -1,0 +1,5 @@
+<%
+  breadcrumb Trace.model_name.human(count: 2) => nil
+%>
+
+<%= @datatable.render_html search_traces_path(format: :json) %>

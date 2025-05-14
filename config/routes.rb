@@ -42,8 +42,16 @@ Rails.application.routes.draw do
         collection do
           get :calculate
         end
+        member do
+          get :duplicate
+        end
       end
       resources :steps
+      resources :traces do
+        member do
+          post :update
+        end
+      end
     end
     resources :runs do
       collection do
@@ -61,6 +69,12 @@ Rails.application.routes.draw do
           get :content
           post :inspect
         end
+      end
+    end
+
+    resources :traces do
+      collection do
+        post :search
       end
     end
 

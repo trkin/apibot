@@ -15,7 +15,7 @@ class InspectService
                end
     inspects.each do |inspect|
       # https://www.rubydoc.info/github/sparklemotion/nokogiri/Nokogiri%2FXML%2FSearchable:css
-      elements = @doc.css(inspect.target)
+      elements = @doc.search(inspect.target)
       next if elements.nil?
       element_value = if inspect.value_target == 'text'
                        elements.text

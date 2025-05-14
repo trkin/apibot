@@ -1,0 +1,26 @@
+<div id='remote-form'>
+  <%= bootstrap_form_with model: @trace, url: @trace.new_record? ? bot_traces_path(@trace.bot) : trace_path(@trace), method: :post, layout: :horizontal do |f| %>
+    <%= f.text_field :name, placeholder: 'Weekly' %>
+    Choose columns to track:
+    <br>
+    <% @trace.bot.inspects.each do |inspect| %>
+      <% inspect_trace = @trace.inspect_traces.find_by(inspect: inspect) || @trace.inspect_traces.build(inspect: inspect) %>
+      <%= check_box_tag "trace[inspect_traces_attributes][#{inspect_trace.id}][inspect_id]", inspect.id, @trace.inspects.include?(inspect), id: inspect.id %>
+      <%= label_tag inspect.id, inspect.name %>
+      <br>
+    <% end %>
+    <hr>
+    <% Trace::CONFIG_BOOLEAN_KEYS.each do |key| %>
+      <%= f.check_box key, name: "#{f.object.class.name.underscore}[config][#{key}]", checked: f.object.config&.dig(key) == '1', label: key.to_s.titleize %>
+    <% end %>
+    <div class='remote-form__actions'>
+      <% unless @trace.new_record? %>
+        <%= link_to trace_path(@trace), method: :delete, 'data-confirm': t_are_you_sure_to_remove_item_name(@trace.name), title: t_crud('delete', Trace), class: 'btn btn-outline-danger' do %>
+          <i class="demo-icon icon-trash-empty" aria-hidden="true"></i>
+          <%= t('delete') %>
+        <% end %>
+      <% end %>
+      <%= f.submit class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>

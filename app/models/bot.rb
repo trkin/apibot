@@ -8,6 +8,9 @@ class Bot < ApplicationRecord
   accepts_nested_attributes_for :inspects
   has_many :steps, -> { order(position: :asc) }, dependent: :destroy
   accepts_nested_attributes_for :steps
+  has_many :traces, dependent: :destroy
+  accepts_nested_attributes_for :traces
+
   has_many :runs, dependent: :destroy
 
   validates :start_url, presence: true, format: URI::regexp(%w[http https])

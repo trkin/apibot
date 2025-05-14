@@ -1,0 +1,6 @@
+DEFAULTS: &DEFAULTS
+  bot: bot
+  name: $LABEL name
+
+my_trace:
+  <<: *DEFAULTS

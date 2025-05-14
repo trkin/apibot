@@ -1,0 +1,23 @@
+<%
+  breadcrumb Run.model_name.human(count: 2) => runs_path, @trace.bot.name_or_start_url => bot_path(@trace.bot), @trace.name => nil
+%>
+<div class='row'>
+  <div class='col-md-3'>
+    <div class='card'>
+      <%= button_tag_open_modal edit_trace_path(@trace), title: t_crud('edit', Trace), pull_right: true %>
+      <%= detail_view @trace, *(Trace::FIELDS) %>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <ul>
+      <% @trace.inspect_traces.each do |inspect_trace| %>
+        <li>
+          <b>
+            <%= inspect_trace.inspect.name %>
+          </b>
+          <%= inspect_trace.value %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

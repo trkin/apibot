@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_06_100252) do
+ActiveRecord::Schema.define(version: 2024_08_04_131953) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,17 @@ ActiveRecord::Schema.define(version: 2023_12_06_100252) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "inspect_traces", force: :cascade do |t|
+    t.bigint "inspect_id", null: false
+    t.bigint "trace_id", null: false
+    t.string "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["inspect_id", "trace_id"], name: "index_inspect_traces_on_inspect_id_and_trace_id", unique: true
+    t.index ["inspect_id"], name: "index_inspect_traces_on_inspect_id"
+    t.index ["trace_id"], name: "index_inspect_traces_on_trace_id"
   end
 
   create_table "inspects", force: :cascade do |t|
@@ -100,6 +111,15 @@ ActiveRecord::Schema.define(version: 2023_12_06_100252) do
     t.index ["bot_id"], name: "index_steps_on_bot_id"
   end
 
+  create_table "traces", force: :cascade do |t|
+    t.bigint "bot_id", null: false
+    t.string "name"
+    t.jsonb "config", default: {}
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["bot_id"], name: "index_traces_on_bot_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.boolean "superadmin", default: false, null: false
@@ -133,8 +153,11 @@ ActiveRecord::Schema.define(version: 2023_12_06_100252) do
   add_foreign_key "bots", "companies"
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
+  add_foreign_key "inspect_traces", "inspects"
+  add_foreign_key "inspect_traces", "traces"
   add_foreign_key "inspects", "bots"
   add_foreign_key "pages", "runs"
   add_foreign_key "runs", "bots"
   add_foreign_key "steps", "bots"
+  add_foreign_key "traces", "bots"
 end

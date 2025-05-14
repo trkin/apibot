@@ -38,7 +38,9 @@
   <div class='col-md-9'>
     <div data-test='steps'>
       <div class='float-left'>
-        Navigate to a desired page or use loop to download multiple pages
+        <% if @bot.steps.blank? %>
+          Navigate to a desired page or use loop to download multiple pages
+        <% end %>
         <%= button_tag_open_modal new_bot_step_path(@bot) do %>
           <i class="demo-icon icon-plus" aria-hidden="true"></i>
           Add new step
@@ -74,7 +76,9 @@
   <div class='col-md-9'>
     <div data-test='inspects'>
       <div class='float-left'>
-        Once you have pages, you can extract data from it
+        <% if @bot.inspects.blank? %>
+          Once you have pages, you can extract data from it
+        <% end %>
         <%= button_tag_open_modal new_bot_inspect_path(@bot) do %>
           <i class="demo-icon icon-plus" aria-hidden="true"></i>
           Add new inspect
@@ -82,6 +86,7 @@
       </div>
       <%= table_view @bot.inspects, *Inspect::FIELDS do |inspect| %>
         <%= button_tag_open_modal edit_inspect_path(inspect) %>
+        <%= button_tag_open_modal duplicate_inspect_path(inspect), text: "Duplicate" %>
       <% end %>
     </div>
   </div>
@@ -102,6 +107,24 @@
             content << "</dl>".html_safe
             content
           %>
+        <% end %>
+      </div>
+    </div>
+    <div class='card'>
+      <div class='card-body'>
+        <% if @bot.last_page.present? %>
+          <h5 class="card-title">TraceService</h5>
+          <ul>
+            <% @bot.traces.each do |trace| %>
+              <li>
+                <%= link_to trace.name, trace_path(trace) %>
+              </li>
+            <% end %>
+          </ul>
+          <%= button_tag_open_modal new_bot_trace_path(@bot) do %>
+            <i class="demo-icon icon-plus" aria-hidden="true"></i>
+            Add new trace
+          <% end %>
         <% end %>
       </div>
     </div>

@@ -17,6 +17,11 @@ class InspectsController < ApplicationUserController
     render partial: 'form', layout: false
   end
 
+  def duplicate
+    @inspect = @inspect.bot.inspects.new @inspect.attributes
+    render partial: 'form', layout: false
+  end
+
   def create
     @inspect = @bot.inspects.new
 
