@@ -4,5 +4,6 @@ class Inspect < ApplicationRecord
   KEYS_KEY = '[".keys"]'
   belongs_to :bot
 
-  validates :name, :target, presence: true
+  validates :name, presence: true, uniqueness: { scope: :bot_id }
+  validates :target, presence: true
 end
