@@ -11,7 +11,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #   "Opening screenshot: gnome-open #{image_path}"
   # end
 
-  # you can use byebug, but it will stop rails so you can not navigate to other
+  # you can use bye bug, but it will stop rails so you can not navigate to other
   # pages or make another requests in chrome while testing
   def pause
     $stderr.write('Press CTRL+j or ENTER to continue') && $stdin.gets

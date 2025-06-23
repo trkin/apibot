@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_08_04_131953) do
+ActiveRecord::Schema.define(version: 2025_06_22_101846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,8 +71,10 @@ ActiveRecord::Schema.define(version: 2024_08_04_131953) do
     t.string "regexp"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "value_target", default: "text", null: false
+    t.string "target_attribute", default: "text", null: false
     t.string "transformations", default: [], array: true
+    t.boolean "ignore_error_when_element_not_found", default: false
+    t.boolean "enabled", default: true
     t.index ["bot_id"], name: "index_inspects_on_bot_id"
   end
 

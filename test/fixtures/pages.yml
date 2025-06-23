@@ -3,5 +3,5 @@ DEFAULTS: &DEFAULTS
   content: $LABEL content
   data: {}
 
-my_page:
+page:
   <<: *DEFAULTS

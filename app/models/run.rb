@@ -1,4 +1,5 @@
 class Run < ApplicationRecord
+  include ErrorLog
   FIELDS = %i[status log error_log finished_at].freeze
   STATUSES = [
     IN_QUEUE = :in_queue,

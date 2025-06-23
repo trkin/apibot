@@ -21,12 +21,19 @@
             <%= t('delete') %>
           <% end %>
         </div>
-        <%= detail_view_list @page, *([:id] + Page::FIELDS - [:content, :data]) %>
+        <%= detail_view_list do %>
+          <%= detail_view_one 'URL', link_to(@page.url.html_safe + '<i class="demo-icon icon-link-ext"></i>'.html_safe, @page.url, target: :_blank) %>
+        <% end %>
+        <%= detail_view_list @page, *([:id] + Page::FIELDS - [:url, :content, :data]) %>
       </div>
     </div>
     <div class="card mt-2">
       <div class="card-body">
-        <%= @page.data %>
+        <%= detail_view_list do %>
+          <% @page.data.each do |key, value| %>
+            <%= detail_view_one key, value %>
+          <% end %>
+        <% end %>
       </div>
     </div>
     <div class="card mt-2">

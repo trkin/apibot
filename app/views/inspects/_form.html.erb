@@ -3,20 +3,31 @@
     <div class='row'>
       <div class='col-md-6'>
         <%= f.text_field :name %>
+        <%= f.check_box :enabled %>
         <%= f.text_field :target, help: "<a href='https://www.w3.org/TR/selectors-3/#selectors'>css</a>  selector like <code>.class</code> or <a href='https://www.w3schools.com/xml/xpath_syntax.asp'>xpath</a> like <code>//div[@id=main]</code> <a href='https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb'>chrome extension</a> (green and yellow are selected)".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
         <small>
+          CSS examples you can try in JS console <code>$('div').length</code>, <code>$('div')[0]</code>:<br>
+          Note that <code>last-child</code> and <code>div:nth-of-type(2)</code> are not supported in Nokogiri.css but xpath is fully supported<br>
+          <code>div.btn</code> to select first div with class "btn"<br>
+          <code>div:not(.btn)</code> to select first div which does not have class "btn"<br>
+          <code>meta[property="og:description"]</code> to select first meta with property "og:description"<br>
+          <code>meta[property="og:description"]:not(.btn)</code> to select first meta with property "og:description" which does not have class "btn"<br>
+        </small>
+        <small>
           XPath examples:<br>
-          <code>//div[@class='btn'][1]</code> to select first div with class "btn<br>
+          <code>//div[last()]</code> get last div
+          <code>//div[@class='btn'][1]</code> to select first div with class "btn"<br>
           <code>//div[contains(text(), "mystr")]</code> to get divs which contain <b>mystr</b><br>
           <code>//li[text()='my']/preceding-sibling::li</code> to get li element before li with text "mystr"<br>
         </small>
-        <%= f.text_field :regexp, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Regexp is used to filter target text, matches are scanned and joined  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>".html_safe %>
+        <%= f.text_field :target_attribute, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Use blank if you want whole element text" %>
+        <%= f.check_box :ignore_error_when_element_not_found, "data-action": "forms#submit_form_ajax", "data-ajax-url":calculate_bot_inspects_path(@inspect.bot) %>
+        <%= f.text_field :regexp, 'data-controller': 'forms', label: "JSON <code>['sku']</code>(to see all keys use helper <code>#{Inspect::KEYS_KEY}</code>). First we proccess <code>[]</code> then we proccess as Regexp. See examples below:".html_safe, 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Regexp is used to filter target text (<code>value.scan(Regexp.new .).join</code>)  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>".html_safe %>
         <small>
           <code>\d+</code> to get only digits<br>
           <code>\S+(?: \S+)*</code> to get only one non space character between<br>
           <code>\S+@\S+</code> to get email surrounded by white space
         </small>
-        <%= f.select :value_target, Inspect::VALUE_TARGETS, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Should we look at text or it's href attribute ?" %>
         <%= f.select :transformations, Inspect::TRANSFORMATIONS, {}, multiple: true, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
       </div>
       <div class='col-md-6'>

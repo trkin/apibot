@@ -21,13 +21,12 @@ class RunsController < ApplicationUserController
     error_messages = []
     @run.pages.each do |page|
       result = InspectService.new(page).perform
-      error_messages.append result.message unless result.success?
+      unless result.success?
+        redirect_to page_path(page), alert: result.message
+        return
+      end
     end
-    if error_messages.present?
-      redirect_to run_path(@run), alert: error_messages.to_sentence
-    else
-      redirect_to run_path(@run), notice: 'Inspect all successully'
-    end
+    redirect_to run_path(@run), notice: 'Inspect all successully'
   end
 
   def new
@@ -40,18 +39,17 @@ class RunsController < ApplicationUserController
   def create
     bot = current_user.company.bots.find(params[:bot_id])
     @run = bot.runs.create! status: Run::IN_QUEUE
-    if params[:run_now]
-      result = RunJob.perform_now @run
-      message = helpers.t_notice('successfully_created', Run)
+    result = if params[:run_now]
+      RunJob.perform_now @run
     else
-      message = 'Successfully added to background jobs'
       job = RunJob.perform_later @run
       @run.job_id = job.job_id
       @run.save!
+      Result.new 'Successfully added to background jobs'
     end
 
     if result.success?
-      flash[:notice] = message
+      flash[:notice] = result.message
     else
       flash[:alert] = result.message
     end

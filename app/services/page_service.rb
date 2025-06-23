@@ -16,6 +16,7 @@ class PageService
     FIND_ALL_ELEMENTS_AND_CREATE_PAGES_FROM_THEM = :find_all_elements_and_create_pages_from_them,
     VISIT_LINKS_FROM_JSON_ARRAY = :visit_links_from_json_array,
     ITERATE_SCRIPT_UNTILL_SAME_RESPONSE_OCCURS = :iterate_script_untill_same_response_occurs,
+    LOOPED_SLEEP = :looped_sleep,
   ].freeze
   ALL_ACTIONS = ONE_TIME_ACTIONS + LOOPED_ACTIONS
   ALL_SELECTOR_TYPES = Capybara::Selector.all.keys
@@ -42,8 +43,9 @@ class PageService
     VISIT_LINKS_FROM_JSON_ARRAY => [:data_store],
     ITERATE_SCRIPT_UNTILL_SAME_RESPONSE_OCCURS => [:code],
     ACTION_MOVE_TO_AND_CLICK => [:css],
-    ACTION_SLEEP => [:duration],
+    ACTION_SLEEP => [:duration_in_seconds],
     ACTION_PAUSE => [],
+    LOOPED_SLEEP => [:duration_in_seconds],
   }
   unless AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys.sort == ALL_ACTIONS.sort
     raise "please define all available selector type for #{ALL_ACTIONS - AVAILABLE_SELECTOR_TYPES_FOR_ACTION.keys}"
@@ -98,13 +100,13 @@ class PageService
   # also we ignore if we call first time completed_step_index == -1 for non
   # first step_index > 0 steps
   #
-  # first_loop_action (only called once)
-  #   second_loop_action (called for each first_loop_action)
+  # first_loop_action (only called once) step_index=0
+  #   second_loop_action (called for each first_loop_action) step_index=1
   def proccess_looped_actions_and_yield_url(url, completed_step_index: -1)
     return if cancelled?
     @run.bot.steps.where(action: LOOPED_ACTIONS).each_with_index do |step, step_index|
       next if step_index <= completed_step_index # ignore since we already completed this step
-      next if completed_step_index == -1 && step_index > 0
+      next if completed_step_index == -1 && step_index > 0 # in first round use only step_index==0
       case step.action.to_sym
       when VISIT_PAGE_FIND_LINK_AND_VISIT_LINK_URL_UNTIL_LINK_DISAPPEAR
         next_url = url
@@ -120,7 +122,10 @@ class PageService
           @session.visit next_url unless @session.current_url == next_url
           limit_page_index += 1
           # here we break looped action
-          logger "@@@@@@@@@@ break has_selector?(#{step.selector_type.to_sym},#{step.locator}) is false" and break unless @session.has_selector?(step.selector_type.to_sym, step.locator)
+          unless @session.has_selector?(step.selector_type.to_sym, step.locator)
+            logger "@@@@@@@@@@ break has_selector?(#{step.selector_type.to_sym},#{step.locator}) is false"
+            break
+          end
           next_link = @session.first(step.selector_type.to_sym, step.locator)
           next_link_href = next_link['href'].to_s.split('#').first
           if next_link_href == @session.current_url
@@ -184,8 +189,11 @@ class PageService
         # TODO: use eval to run arbitrary ruby code. Available methods:
         # @session
         # proccess_looped_actions_and_yield_url
+      when LOOPED_SLEEP
+        sleep step.locator.to_i
+        yield url
       else
-        raise "unknown_step_action=#{step.action}"
+        raise "unknown_step_for_looped_action=#{step.action}"
       end
     end
     if @run.bot.steps.where(action: LOOPED_ACTIONS).size - 1 == completed_step_index
@@ -211,7 +219,7 @@ class PageService
       when ACTION_PAUSE
         pause
       else
-        raise "unknown_step_action=#{step.action}"
+        raise "unknown_step_for_onetime_action=#{step.action}"
       end
     end
   end

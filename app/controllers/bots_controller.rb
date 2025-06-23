@@ -47,11 +47,7 @@ class BotsController < ApplicationUserController
   end
 
   def update
-    update_and_render_or_redirect_in_js @bot, _bot_params, ->(bot) {
-      result = bot.create_and_perform_run
-      flash[:notice] = result.message
-      bot_path(bot)
-    }
+    update_and_render_or_redirect_in_js @bot, _bot_params, bot_path(@bot)
   end
 
   def destroy

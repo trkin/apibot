@@ -1,5 +1,5 @@
 class Inspect < ApplicationRecord
-  FIELDS = %i[name target target_attribute regexp transformations].freeze
+  FIELDS = %i[name target target_attribute ignore_error_when_element_not_found regexp transformations].freeze
   TRANSFORMATIONS = %w[titleize upcase downcase to_lat to_cyr slugify].freeze
   KEYS_KEY = '[".keys"]'
   belongs_to :bot

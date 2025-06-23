@@ -84,7 +84,13 @@
           Add new inspect
         <% end %>
       </div>
-      <%= table_view @bot.inspects, *Inspect::FIELDS do |inspect| %>
+      <%= table_view @bot.inspects, *(Inspect::FIELDS - %i[target_attribute ignore_error_when_element_not_found enabled]) do |inspect| %>
+        <% if inspect.ignore_error_when_element_not_found %>
+          Ignore error when not found
+        <% end %>
+        <% unless inspect.enabled %>
+          Disabled
+        <% end %>
         <%= button_tag_open_modal edit_inspect_path(inspect) %>
         <%= button_tag_open_modal duplicate_inspect_path(inspect), text: "Duplicate" %>
       <% end %>
