@@ -1,4 +1,4 @@
-<div id='remote-form'>
+<div id='remote-form' class="position-relative">
   <%= bootstrap_form_with model: @inspect, url: @inspect.new_record? ? bot_inspects_path(@inspect.bot) : inspect_path(@inspect) do |f| %>
     <div class='row'>
       <div class='col-md-6'>
@@ -59,4 +59,7 @@
       <%= f.submit class: 'btn btn-primary' %>
     </div>
   <% end %>
+  <div class="position-absolute" style="left: 100px; bottom: 0px"> <%# left 100px because of Delete %>
+    <%= button_tag_open_modal duplicate_inspect_path(@inspect), text: "Duplicate" %>
+  </div>
 </div>

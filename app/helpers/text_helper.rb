@@ -115,14 +115,15 @@ module TextHelper
     end
   end
 
-  def button_tag_open_modal(url, text: t('edit'), title: nil, pull_right: false)
-    title ||= text
+  # options = { text:,  title: , pull_right: , class: }
+  def button_tag_open_modal(url, text: t('edit'), **options)
+    title = options[:title] || options[:text] || t("edit")
     tag.button(
       'data-controller': 'modal',
       'data-modal-url': url,
       'data-action': 'modal#open',
       'data-modal-title': title,
-      class: "btn text-primary #{'edit-button' if pull_right}",
+      class: "btn text-primary #{'edit-button' if options[:pull_right]} #{options[:class]}",
     ) do
       if block_given?
         yield

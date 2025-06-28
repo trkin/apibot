@@ -1,0 +1,14 @@
+<div id="remote-form">
+  <%= bootstrap_form_with model: @bot, url: update_position_bot_inspects_path(@bot), method: :post do |f| %>
+    (drag and drop)
+    <%= f.submit class: 'btn btn-primary' %>
+    <ol class="list-group list-group-numbered" data-controller="reorder">
+      <% @inspects.each do |inspect| %>
+        <li class="list-group-item">
+          <%= inspect.name %>
+          <%= f.hidden_field "inspect_ids", multiple: true, value: inspect.id %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</div>

@@ -1,6 +1,6 @@
 class InspectsController < ApplicationUserController
-  before_action :_set_inspect, except: %i[index new create calculate]
-  before_action :_set_bot, only: %i[index new create calculate]
+  before_action :_set_inspect, except: %i[index new create calculate reorder update_position]
+  before_action :_set_bot, only: %i[index new create calculate reorder update_position]
 
   def index
     # we index on bot show page
@@ -60,6 +60,19 @@ class InspectsController < ApplicationUserController
       preview: preview
     }
   end
+
+  def reorder
+    @inspects = @bot.inspects.order(:position)
+    render layout: false
+  end
+
+  def update_position
+    @bot.inspects.each do |inspect|
+      inspect.update! position: params[:bot][:inspect_ids].index(inspect.id.to_s) + 1
+    end
+    redirect_to bot_path(@bot), notice: helpers.t_notice('successfully_updated', Bot)
+  end
+
 
   def _set_inspect
     @inspect = Inspect.joins(bot: :company).where(bots: { company: current_user.company }).find(params[:id])

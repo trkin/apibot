@@ -41,6 +41,8 @@ Rails.application.routes.draw do
       resources :inspects do
         collection do
           get :calculate
+          get :reorder
+          post :update_position
         end
         member do
           get :duplicate

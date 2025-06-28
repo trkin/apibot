@@ -4,7 +4,7 @@ class Bot < ApplicationRecord
 
   belongs_to :company
 
-  has_many :inspects, dependent: :destroy
+  has_many :inspects, -> { order(position: :asc) }, dependent: :destroy
   accepts_nested_attributes_for :inspects
   has_many :steps, -> { order(position: :asc) }, dependent: :destroy
   accepts_nested_attributes_for :steps
