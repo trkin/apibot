@@ -22,11 +22,13 @@
         </small>
         <%= f.text_field :target_attribute, label: "Target attribute (eg: <code>href</code>, <code>value</code>, <code>id</code>)".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Use blank if you want whole element text" %>
         <%= f.check_box :ignore_error_when_element_not_found, "data-action": "forms#submit_form_ajax", "data-ajax-url":calculate_bot_inspects_path(@inspect.bot) %>
-        <%= f.text_field :regexp, 'data-controller': 'forms', label: "3 kinds: start with <code>[</code> for JSON (eg <code>['sku']</code>, to see all keys use helper <code>#{Inspect::KEYS_KEY}</code>), start with <code>\"</code> for static output, otherwise is regexp. In <code>[]\d+</code> we first proccess JSON then we proccess as Regexp. Use CAPITAL See examples below:".html_safe, 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Regexp is used to filter target text (<code>value.scan(Regexp.new .).join</code>)  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>".html_safe %>
+        <%= f.text_field :regexp, 'data-controller': 'forms', label: "4 kinds: start with <code>[</code> for JSON (eg <code>['sku']</code>, to see all keys use helper <code>#{Inspect::KEYS_KEY}</code>), start with <code>\"</code> for static output, start with <code>{{</code> to interpolate other inspect, otherwise is regexp. In <code>[]\d+</code> we first proccess JSON then we proccess as Regexp".html_safe, 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Regexp is used to filter target text (<code>value.scan(Regexp.new .).join</code>)  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>".html_safe %>
         <small>
           <code>\d+</code> to get only digits<br>
           <code>\S+(?: \S+)*</code> to get only one non space character between<br>
-          <code>\S+@\S+</code> to get email surrounded by white space
+          <code>\S+@\S+</code> to get email surrounded by white space<br>
+          <code>["id"]\d+" description="{{ description }}</code> Get "id" of json, use only digits and append description
+
         </small>
         <%= f.select :transformations, Inspect::TRANSFORMATIONS, {}, multiple: true, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
       </div>

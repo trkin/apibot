@@ -79,21 +79,10 @@
         <% if @bot.inspects.blank? %>
           Once you have pages, you can extract data from it
         <% end %>
-        <div class="btn-group">
-          <%= button_tag_open_modal new_bot_inspect_path(@bot), class: 'btn btn-primary' do %>
-            <i class="demo-icon icon-plus" aria-hidden="true"></i>
-            Add new inspect
-          <% end %>
-          <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <div class="dropdown-menu dropdown-menu-right">
-            <%= button_tag_open_modal reorder_bot_inspects_path(@bot), class: 'dropdown-item' do %>
-              <i class="demo-icon icon-sort"></i>
-              Reorder inspects
-            <% end %>
-          </div>
-        </div>
+        <%= button_tag_open_modal new_bot_inspect_path(@bot), class: 'btn' do %>
+          <i class="demo-icon icon-plus" aria-hidden="true"></i>
+          Add new inspect
+        <% end %>
       </div>
       <div>
         <div class="btn-group">

@@ -50,4 +50,12 @@ class InspectServiceTest < ActiveSupport::TestCase
     assert_equal "APIBOT_ATTRIBUTE: non_existing_attribute not_found on <input value=\"hi\" class=\"myclass\">", result.message
   end
 
+  test "#get_value static value" do
+    content = "<input value='hi' class='myclass'>"
+    target = "."
+    target_attribute = ""
+    regexp = '"static"'
+    result = @service.get_value content, target, target_attribute, regexp
+    assert_equal "static", result.data[:value]
+  end
 end
