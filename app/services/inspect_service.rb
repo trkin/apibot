@@ -85,6 +85,11 @@ class InspectService
         end
         regexp = regexp.gsub(/\[.*?\]/, "")
       end
+      if regexp.start_with? '"'
+        raise "missing_closing_quote" if regexp.end_with? '"'
+
+        return Result.new "OK", value: regexp[1, -1]
+      end
       if regexp.present?
         begin
           value = value.scan(Regexp.new regexp).join
