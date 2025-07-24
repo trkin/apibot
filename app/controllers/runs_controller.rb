@@ -18,7 +18,6 @@ class RunsController < ApplicationUserController
   end
 
   def inspect_all
-    error_messages = []
     @run.pages.each do |page|
       result = InspectService.new(page).perform
       unless result.success?

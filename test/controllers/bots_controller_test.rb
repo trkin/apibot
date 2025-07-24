@@ -2,7 +2,7 @@ require 'test_helper'
 
 class BotsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @bot = bots(:my_bot)
+    @bot = bots(:bot)
     sign_in users(:user)
   end
 

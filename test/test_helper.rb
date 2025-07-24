@@ -4,7 +4,7 @@ require 'rails/test_help'
 require 'webmock/minitest'
 
 Dir[Rails.root.join('test/a/**/*.rb')].each { |f| require f }
-Dir[Rails.root.join("test/test_helpers/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("test/helpers/**/*.rb")].sort.each { |f| require f }
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers

@@ -18,17 +18,20 @@ class Run < ApplicationRecord
     in_queue? | in_progress?
   end
 
-  def generate_csv
+  def generate_csv(selected_pages: nil)
+    selected_pages ||= pages
     CSV.generate do |csv|
-      csv << bot.inspects.map(&:name)
-      pages.each do |page|
-        csv << page.data.values
+      not_shown_inspect_names = bot.inspects.select {|inspect| !inspect.shown_in_output}.map(&:name)
+      csv << bot.inspects.map(&:name) - not_shown_inspect_names
+      selected_pages.each do |page|
+        csv << page.data.except(*not_shown_inspect_names).values
       end
     end
   end
 
-  def generate_json
-    result = pages.map do |page|
+  def generate_json(selected_pages: nil)
+    selected_pages ||= pages
+    result = selected_pages.map do |page|
       page.data
     end
     result.to_json

@@ -4,9 +4,9 @@ class Bot < ApplicationRecord
 
   belongs_to :company
 
-  has_many :inspects, -> { order(position: :asc) }, dependent: :destroy
+  has_many :inspects, -> { order(position: :asc) }, dependent: :destroy, inverse_of: :bot
   accepts_nested_attributes_for :inspects
-  has_many :steps, -> { order(position: :asc) }, dependent: :destroy
+  has_many :steps, -> { order(position: :asc) }, dependent: :destroy, inverse_of: :bot
   accepts_nested_attributes_for :steps
   has_many :traces, dependent: :destroy
   accepts_nested_attributes_for :traces
@@ -28,11 +28,25 @@ class Bot < ApplicationRecord
   end
 
   def last_page
-    last_run.pages.last
+    last_run.pages.order(updated_at: :asc).last
   end
 
   def create_and_perform_run
     run = runs.create! status: Run::IN_QUEUE
     RunJob.perform_now run
+  end
+
+  def duplicate!
+    new_bot = dup
+    steps.each do |step|
+      new_bot.steps.build step.dup.attributes
+    end
+    inspects.each do |inspect|
+      new_bot.inspects.build inspect.dup.attributes
+    end
+    new_bot.runs.build last_run.dup.attributes
+    new_bot.name += "(duplicated #{Time.zone.now}"
+    new_bot.save!
+    new_bot
   end
 end

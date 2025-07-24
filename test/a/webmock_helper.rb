@@ -4,7 +4,7 @@ module WebmockHelper
       .to_return(status: 200, body: <<~HTML)
     <html>
       <body>
-        <a href='#' class='my_step'>Link</a>
+        <a href='#' class='step'>Link</a>
       </body>
     </html>
     HTML

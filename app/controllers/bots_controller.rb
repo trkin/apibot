@@ -46,6 +46,11 @@ class BotsController < ApplicationUserController
     end
   end
 
+  def duplicate
+    bot = @bot.duplicate!
+    redirect_to bot, notice: helpers.t_notice('successfully_created', Bot)
+  end
+
   def update
     update_and_render_or_redirect_in_js @bot, _bot_params, bot_path(@bot)
   end

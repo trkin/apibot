@@ -1,4 +1,4 @@
-<div id='remote-form' style="min-width: <%= @bot.start_url.size + 20 %>ch" >
+<div id='remote-form' style="min-width: <%= @bot.start_url.to_s.size + 20 %>ch" >
   <%= bootstrap_form_with model: @bot, layout: :horizontal do |f| %>
     <%= f.text_field :start_url, placeholder: 'https://en.wikipedia.org/wiki/Main_Page' %>
     <%= f.text_field :name, placeholder: 'Wiki: On this day' %>

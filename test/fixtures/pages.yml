@@ -1,5 +1,6 @@
 DEFAULTS: &DEFAULTS
-  run: my_run
+  run: run
+  url: "/"
   content: $LABEL content
   data: {}
 

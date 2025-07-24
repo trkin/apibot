@@ -2,7 +2,7 @@ require 'application_system_test_case'
 
 class RunsTest < ApplicationSystemTestCase
   setup do
-    @run = runs(:my_run)
+    @run = runs(:run)
     sign_in users(:user)
   end
 

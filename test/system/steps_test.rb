@@ -2,7 +2,7 @@ require 'application_system_test_case'
 
 class StepsTest < ApplicationSystemTestCase
   setup do
-    @step = steps(:my_step)
+    @step = steps(:step)
     sign_in users(:user)
   end
 

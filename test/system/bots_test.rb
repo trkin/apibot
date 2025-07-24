@@ -2,7 +2,7 @@ require 'application_system_test_case'
 
 class BotsTest < ApplicationSystemTestCase
   setup do
-    @bot = bots(:my_bot)
+    @bot = bots(:bot)
     sign_in users(:user)
   end
 

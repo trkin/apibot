@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RunsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @run = runs(:my_run)
+    @run = runs(:run)
     sign_in users(:user)
   end
 

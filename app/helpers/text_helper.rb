@@ -133,6 +133,22 @@ module TextHelper
     end
   end
 
+  # https://getbootstrap.com/docs/4.1/components/dropdowns/#single-button
+  def button_tag_for_drop_down(items: [], label: "&#8942;", **options) # vertical ellipsis kebab menu three dots
+    items_joined = items.map { |item| "<div class='dropdown-item'>#{item}</div>" }.join
+    <<~HTML
+      <div class="dropdown #{options[:class]}" style="#{options[:style]}">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          #{options[:label]}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          #{items_joined}
+        </div>
+      </div>
+    HTML
+      .html_safe
+  end
+
   # f.text_field :phone,
   #              help: f.object.a_phone.blank? && add_alternative_helper(User.human_attribute_name(:a_phone), '#a_phone')
   # <div id='a_phone' class='<%= 'd-none-display' if f.object.a_phone.blank? %>'>

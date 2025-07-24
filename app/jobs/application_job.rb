@@ -9,7 +9,8 @@ class ApplicationJob < ActiveJob::Base
   # To stop a job you can use ApplicationJob.cancelled?(@run.job_id)
   def self.cancelled?(jid)
     return false unless jid.present?
-    Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
+    return false if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }.zero?
+    true
   end
 
   def self.cancel!(jid)

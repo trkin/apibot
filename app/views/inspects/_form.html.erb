@@ -3,7 +3,7 @@
     <div class='row'>
       <div class='col-md-6'>
         <%= f.text_field :name %>
-        <%= f.check_box :enabled %>
+        <%= f.check_box :shown_in_output %>
         <%= f.text_field :target, help: "<a href='https://www.w3.org/TR/selectors-3/#selectors'>css</a>  selector like <code>.class</code> or <a href='https://www.w3schools.com/xml/xpath_syntax.asp'>xpath</a> like <code>//div[@id=main]</code> <a href='https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb'>chrome extension</a> (green and yellow are selected)".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
         <small>
           CSS examples you can try in JS console <code>$('div').length</code>, <code>$('div')[0]</code>:<br>
@@ -17,20 +17,23 @@
           XPath examples:<br>
           <code>//div[last()]</code> get last div
           <code>//div[@class='btn'][1]</code> to select first div with class "btn"<br>
-          <code>//div[contains(text(), "mystr")]</code> to get divs which contain <b>mystr</b><br>
-          <code>//li[text()='my']/preceding-sibling::li</code> to get li element before li with text "mystr"<br>
+          <code>//div[contains(text(), "mystr")]</code> divs which contain <b>mystr</b><br>
+          <code>//li[text()='mystr']/preceding-sibling::li</code> li element before li with text "mystr"<br>
+          <code>//h3[text()='mystr']/following-sibling::span</code> span element after h3 with text "mystr"<br>
         </small>
         <%= f.text_field :target_attribute, label: "Target attribute (eg: <code>href</code>, <code>value</code>, <code>id</code>)".html_safe, 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Use blank if you want whole element text" %>
         <%= f.check_box :ignore_error_when_element_not_found, "data-action": "forms#submit_form_ajax", "data-ajax-url":calculate_bot_inspects_path(@inspect.bot) %>
-        <%= f.text_field :regexp, 'data-controller': 'forms', label: "4 kinds: start with <code>[</code> for JSON (eg <code>['sku']</code>, to see all keys use helper <code>#{Inspect::KEYS_KEY}</code>), start with <code>\"</code> for static output, start with <code>{{</code> to interpolate other inspect, otherwise is regexp. In <code>[]\d+</code> we first proccess JSON then we proccess as Regexp".html_safe, 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Regexp is used to filter target text (<code>value.scan(Regexp.new .).join</code>)  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>".html_safe %>
+        <%= f.text_field :regexp, 'data-controller': 'forms', label: "3 kinds: start with <code>[</code> for JSON (eg <code>['sku']</code>, to see all keys use helper <code>#{Inspect::KEYS_KEY}</code>), start with <code>\"</code> for static output, and otherwise is regexp. In <code>[]\d+</code> we first proccess JSON then we proccess as Regexp".html_safe, 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot), help: "Regexp is used to filter target text (<code>value.scan(Regexp.new this).join</code>)  <a href='https://regex101.com/r/9iyWbK/1'>regex101</a>".html_safe %>
         <small>
           <code>\d+</code> to get only digits<br>
           <code>\S+(?: \S+)*</code> to get only one non space character between<br>
           <code>\S+@\S+</code> to get email surrounded by white space<br>
-          <code>["id"]\d+" description="{{ description }}</code> Get "id" of json, use only digits and append description
-
+          <code>["@graph", 0, "@id"]</code> Get id from <small>script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://mydomain.com"}]}/script></small><br>
+          <code>["id"]\d+</code> Get "id" of json, and use only digits<br>
+          <code>["name"][^,]</code> Get "name" of json, and use only non comma characters<br>
         </small>
         <%= f.select :transformations, Inspect::TRANSFORMATIONS, {}, multiple: true, 'data-controller': 'forms', 'data-action': 'change->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
+        <%= f.text_field :interpolation, placeholder: "{{ this }}", help: "Add another fields, for example '{{this}} other sku={{other sku}}'", 'data-controller': 'forms', 'data-action': 'keyup->forms#submit_form_ajax', 'data-ajax-url': calculate_bot_inspects_path(@inspect.bot) %>
       </div>
       <div class='col-md-6'>
         <dl>
@@ -40,13 +43,13 @@
           </dd>
           <dt>Preview</dt>
           <dd>
-            <iframe width='100%' height="300px" srcdoc="
+            <iframe width='100%' height="50vh" style="height: 50vh" srcdoc="
               <%= @inspect.bot.last_page.content.gsub '"', "'" %>
               "></iframe>
           </dd>
           <dt>HTML</dt>
           <dd>
-            <%= text_area_tag :code, @inspect.bot.last_page.content, rows: 10, style: "width:100%", disabled: true %>
+            <%= text_area_tag :code, @inspect.bot.last_page.content, rows: 15, style: "width:100%", disabled: true %>
           </dd>
         </dl>
       </div>

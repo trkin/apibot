@@ -1,6 +1,6 @@
 DEFAULTS: &DEFAULTS
-  bot: my_bot
+  bot: bot
   status: <%= Run::IN_QUEUE %>
 
-my_run:
+run:
   <<: *DEFAULTS

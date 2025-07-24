@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_06_29_045751) do
+ActiveRecord::Schema.define(version: 2025_07_03_035040) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,8 +74,9 @@ ActiveRecord::Schema.define(version: 2025_06_29_045751) do
     t.string "target_attribute", default: "", null: false
     t.string "transformations", default: [], array: true
     t.boolean "ignore_error_when_element_not_found", default: false
-    t.boolean "enabled", default: true
+    t.boolean "shown_in_output", default: true
     t.integer "position"
+    t.string "interpolation", default: "", null: false
     t.index ["bot_id"], name: "index_inspects_on_bot_id"
   end
 

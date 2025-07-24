@@ -2,7 +2,7 @@ require 'test_helper'
 
 class StepsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @step = steps(:my_step)
+    @step = steps(:step)
     sign_in users(:user)
   end
 

@@ -9,7 +9,13 @@ class PagesController < ApplicationController
     render json: PagesDatatable.new(view_context)
   end
 
-  def show; end
+  def show
+    respond_to do |format|
+      format.html
+      format.csv { send_data @page.run.generate_csv(selected_pages: Page.where(id: @page)), filename: "#{@page.run.bot.name}-#{@page.id}-#{Date.today}.csv" }
+      format.json { render json: @run.generate_json(selected_pages: Page.where(id: @page)) }
+    end
+  end
 
   def content
     render html: @page.content.gsub(/display.none/, '').html_safe

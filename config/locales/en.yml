@@ -43,3 +43,4 @@ en:
   my_account: My account
   my_company: My company
   change_item_name: Change %{item_name}
+  duplicate: Duplicate

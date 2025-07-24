@@ -35,6 +35,9 @@ Rails.application.routes.draw do
     resource :sign_up
     resource :dashboard
     resources :bots do
+      member do
+        post :duplicate
+      end
       collection do
         post :search
       end
